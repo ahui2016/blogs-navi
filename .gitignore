@@ -1,2 +1,5 @@
 
 *.exe
+public/ts/.pnp.cjs
+public/ts/yarn-error.log
+public/ts/.yarn
