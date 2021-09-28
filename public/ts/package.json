@@ -1,7 +1,0 @@
-{
-  "name": "blogs-navi-ts",
-  "packageManager": "yarn@3.0.2",
-  "devDependencies": {
-    "@types/jquery": "^3.5.6"
-  }
-}

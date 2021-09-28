@@ -8,9 +8,6 @@
     "moduleResolution": "Classic",
     "outDir": "dist",
     "baseUrl": ".",
-    "paths": {
-      "dayjs": ["types/dayjs"]
-    }
   },
   "include": ["src/**/*", "types"],
   "exclude": [
