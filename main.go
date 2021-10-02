@@ -13,6 +13,8 @@ func main() {
 	e.File("/", "public/index.html")
 
 	// admin := e.Group("/admin", checkPassword)
+	admin := e.Group("/admin")
+	admin.POST("/add-blog", addBlogHandler)
 
 	e.Logger.Fatal(e.Start(*addr))
 }

@@ -21,8 +21,10 @@ export function m(name: string | mjComponent): mjElement {
 
 interface ComponentOptions {
   id?:       string;
+  text?:     string;
   children?: mjElement[]; 
   classes?:  string;
+  css?:      {[index: string]:any};
   attr?:     {[index: string]:any};
 }
 
@@ -51,8 +53,13 @@ export function cc(name: string, options?: ComponentOptions): mjComponent {
   const component = newComponent(name, id);
 
   if (options.attr)     component.view.attr(options.attr);
+  if (options.css)      component.view.css(options.css);
   if (options.classes)  component.view.addClass(options.classes);
-  if (options.children) component.view.append(options.children);
+  if (options.text) {
+    component.view.text(options.text);
+  } else if (options.children) {
+    component.view.append(options.children);
+  }
   return component;
 }
 

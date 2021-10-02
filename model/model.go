@@ -11,8 +11,8 @@ type Blog struct {
 	ID          string
 	Name        string
 	Author      string
-	Website     string   // 博客或网站的网址
-	Links       []string // 与博客或作者有关的其他网址
+	Website     string // 博客或网站的网址
+	Links       string // 与博客或作者有关的其他网址，用换行符分隔
 	Description string
 	Feed        string // 用来判断网站有无更新的网址 (比如 RSS feed)
 	FeedDate    int64  // 上次检查时间 (时间戳)

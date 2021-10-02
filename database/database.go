@@ -3,9 +3,14 @@ package database
 import (
 	"database/sql"
 
+	"ahui2016.github.com/blogs-navi/model"
 	"ahui2016.github.com/blogs-navi/stmt"
 	"ahui2016.github.com/blogs-navi/util"
 	_ "github.com/mattn/go-sqlite3"
+)
+
+type (
+	Blog = model.Blog
 )
 
 type DB struct {
@@ -29,5 +34,21 @@ func (db *DB) Open(dbPath string) (err error) {
 		return
 	}
 	db.Path = dbPath
-	return db.Exec(stmt.CreateTables)
+	if err = db.Exec(stmt.CreateTables); err != nil {
+		return
+	}
+	return initFirstID(blog_id_key, blog_id_prefix, db.DB)
+}
+
+func (db *DB) InsertBlog(blog *Blog) (err error) {
+	tx := db.mustBegin()
+	defer tx.Rollback()
+
+	if blog.ID, err = getNextID(tx, blog_id_key); err != nil {
+		return
+	}
+	if err = insertBlog(db.DB, blog); err != nil {
+		return
+	}
+	return tx.Commit()
 }

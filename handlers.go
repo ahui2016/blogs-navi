@@ -1,8 +1,12 @@
 package main
 
 import (
+	"fmt"
+	"strconv"
+	"strings"
 	"time"
 
+	"ahui2016.github.com/blogs-navi/util"
 	"github.com/labstack/echo/v4"
 )
 
@@ -23,5 +27,57 @@ func errorHandler(err error, c echo.Context) {
 	if e, ok := err.(*echo.HTTPError); ok {
 		c.JSON(e.Code, e.Message)
 	}
-	c.JSON(500, Text{err.Error()})
+	util.Panic(c.JSON(500, Text{err.Error()}))
+}
+
+func addBlogHandler(c echo.Context) error {
+	blog, err := getBlogValue(c)
+	if err != nil {
+		return err
+	}
+	if err := db.InsertBlog(blog); err != nil {
+		return err
+	}
+	return c.JSON(OK, Text{blog.ID})
+}
+
+// getFormValue gets the c.FormValue(key), trims its spaces,
+// and checks if it is empty or not.
+func getFormValue(c echo.Context, key string) (string, error) {
+	value := strings.TrimSpace(c.FormValue(key))
+	if value == "" {
+		return "", fmt.Errorf("form value [%s] is empty", key)
+	}
+	return value, nil
+}
+
+func getBlogValue(c echo.Context) (blog *Blog, err error) {
+	// if id == "" {
+	// 	return nil, fmt.Errorf("id is empty, need an id")
+	// }
+	name, e1 := getFormValue(c, "name")
+	website, e2 := getFormValue(c, "website")
+	feed, e3 := getFormValue(c, "feed")
+	thold, e4 := getNumber(c, "thold")
+	if err := util.WrapErrors(e1, e2, e3, e4); err != nil {
+		return nil, err
+	}
+	return &Blog{
+		ID:          c.FormValue("id"),
+		Name:        name,
+		Author:      c.FormValue("author"),
+		Website:     website,
+		Links:       c.FormValue("links"),
+		Description: c.FormValue("desc"),
+		Feed:        feed,
+		Threshold:   thold,
+	}, nil
+}
+
+func getNumber(c echo.Context, key string) (int64, error) {
+	s := c.FormValue(key)
+	if s == "" {
+		return 0, nil
+	}
+	return strconv.ParseInt(s, 10, 0)
 }

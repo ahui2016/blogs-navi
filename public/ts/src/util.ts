@@ -35,6 +35,7 @@ export interface mjAlerts extends mjComponent {
 export function CreateAlerts(max?: number): mjAlerts {
   const alerts = cc('div') as mjAlerts;
   alerts.max = max ? max : 3;
+  alerts.count = 0;
 
   alerts.insertElem = (elem) => {
     $(alerts.id).prepend(elem);

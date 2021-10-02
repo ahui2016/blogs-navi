@@ -53,3 +53,8 @@ const UpdateIntValue = `UPDATE metadata SET int_value=? WHERE name=?;`
 const InsertTextValue = `INSERT INTO metadata (name, text_value) VALUES (?, ?);`
 const GetTextValue = `SELECT text_value FROM metadata WHERE name=?;`
 const UpdateTextValue = `UPDATE metadata SET text_value=? WHERE name=?;`
+
+const InsertBlog = `INSERT INTO blog (
+	id, name, author, website, links, description, feed, feedate,
+	feedsize, lastupdate, threshold, status, errmsg, category
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
