@@ -3,6 +3,7 @@ import * as util from './util.js';
 
 let blogID = util.getUrlParam('id');
 
+const Loading = util.CreateLoading('center');
 const Alerts = util.CreateAlerts();
 
 const Title = cc('h1', {text: 'Add a new blog'});
@@ -34,36 +35,62 @@ const Form = cc('form', {attr:{'autocomplete':'off'}, children: [
     util.ajax({method:'POST',url:'/admin/add-blog',alerts:SubmitAlerts,buttonID:SubmitBtn.id,body:body},
       (resp) => {
         blogID = resp.message;
+        Alerts.insert('success', '点击下面的 Edit 按钮可编辑博客资料');
         Alerts.insert('success', '成功添加博客');
         Form.elem().hide();
+        EditBtnArea.elem().show();
       });
   })),
 ]});
 
-function create_textarea(rows: number=2): mjComponent {
-  return cc('textarea', {classes:'form-textarea', attr:{'rows': rows}});
-}
-function create_textinput(): mjComponent {
-  return cc('input', {attr:{type:'text'}});
-}
-
-function create_item(comp: mjComponent, name: string, description: string): mjElement {
-  return m('div').addClass('mb-3').append([
-    m('label').attr({for:comp.raw_id}).text(name),
-    m(comp).addClass('form-textinput'),
-    m('div').addClass('form-text').text(description),
-  ]);
-}
+const EditBtn = cc('button', {text:'Edit',classes:'btn'});
+const EditBtnArea = cc('div', {classes:'text-center my-5',children:[
+  m(EditBtn).on('click', () => {
+    location.href = '/public/edit-blog.html?id='+blogID;
+  })
+]});
 
 $('#root').append([
   m(Title),
+  m(Loading),
   m(Alerts),
-  m(Form),
+  m(Form).hide(),
+  m(EditBtnArea).hide(),
 ]);
+
+init();
+
+function init() {
+  if (!blogID) {
+    Loading.hide();
+    Form.elem().show();
+    return;
+  }
+
+  $('title').text('Edit blog');
+  Title.elem().text(`Edit Blog (id:${blogID})`);
+
+  const body = util.newFormData('id', blogID);
+  util.ajax({method:'POST',url:'/api/get-blog',alerts:Alerts,body:body},
+    (resp) => {
+      const blog = resp as util.Blog;
+      Form.elem().show();
+      NameInput.elem().val(blog.Name);
+      AuthorInput.elem().val(blog.Author);
+      WebsiteInput.elem().val(blog.Website);
+      FeedInput.elem().val(blog.Feed);
+      THoldInput.elem().val(blog.Threshold);
+      DescInput.elem().val(blog.Description);
+      LinksInput.elem().val(blog.Links);
+    }, undefined, () => {
+      Loading.hide();
+    });
+}
 
 function newBlogForm() {
   const links = util.val(LinksInput)
-    .split('\n').map(line => line.trim()).filter(line => line.length > 0);
+    .split('\n').map(line => line.trim()).filter(line => line.length > 0)
+    .join('\n');
 
   return {
     id: blogID,
@@ -73,6 +100,20 @@ function newBlogForm() {
     feed: util.val(FeedInput).trim(),
     thold: util.val(THoldInput),
     desc: util.val(DescInput).trim(),
-    links: links.join('\n'),
+    links: links,
   };
+}
+
+function create_textarea(rows: number=2): mjComponent {
+  return cc('textarea', {classes:'form-textarea', attr:{'rows': rows}});
+}
+function create_textinput(): mjComponent {
+  return cc('input', {attr:{type:'text'}});
+}
+function create_item(comp: mjComponent, name: string, description: string): mjElement {
+  return m('div').addClass('mb-3').append([
+    m('label').attr({for:comp.raw_id}).text(name),
+    m(comp).addClass('form-textinput'),
+    m('div').addClass('form-text').text(description),
+  ]);
 }

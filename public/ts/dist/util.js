@@ -23,6 +23,18 @@ export function enable(id) {
         $(id).css('pointer-events', 'auto');
     }
 }
+export function CreateLoading(align) {
+    let classes = 'Loading';
+    if (align == 'center') {
+        classes += ' text-center';
+    }
+    const loading = cc('div', {
+        text: 'Loading...', classes: classes
+    });
+    loading.hide = () => { loading.elem().hide(); };
+    loading.show = () => { loading.elem().show(); };
+    return loading;
+}
 export function CreateAlerts(max) {
     const alerts = cc('div');
     alerts.max = max ? max : 3;
@@ -30,9 +42,7 @@ export function CreateAlerts(max) {
     alerts.insertElem = (elem) => {
         $(alerts.id).prepend(elem);
         alerts.count++;
-        console.log(alerts.count);
         if (alerts.count > alerts.max) {
-            console.log(`${alerts.id} div:last-of-type`);
             $(`${alerts.id} div:last-of-type`).remove();
         }
     };
@@ -137,4 +147,9 @@ export function val(obj) {
 }
 export function itemID(id) {
     return `i${id}`;
+}
+export function newFormData(name, value) {
+    const fd = new FormData();
+    fd.set(name, value);
+    return fd;
 }

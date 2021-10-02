@@ -1,6 +1,7 @@
 import { m, cc } from './mj.js';
 import * as util from './util.js';
 let blogID = util.getUrlParam('id');
+const Loading = util.CreateLoading('center');
 const Alerts = util.CreateAlerts();
 const Title = cc('h1', { text: 'Add a new blog' });
 const NameInput = create_textinput();
@@ -26,11 +27,65 @@ const Form = cc('form', { attr: { 'autocomplete': 'off' }, children: [
             const body = newBlogForm();
             util.ajax({ method: 'POST', url: '/admin/add-blog', alerts: SubmitAlerts, buttonID: SubmitBtn.id, body: body }, (resp) => {
                 blogID = resp.message;
+                Alerts.insert('success', '点击下面的 Edit 按钮可编辑博客资料');
                 Alerts.insert('success', '成功添加博客');
                 Form.elem().hide();
+                EditBtnArea.elem().show();
             });
         })),
     ] });
+const EditBtn = cc('button', { text: 'Edit', classes: 'btn' });
+const EditBtnArea = cc('div', { classes: 'text-center my-5', children: [
+        m(EditBtn).on('click', () => {
+            location.href = '/public/edit-blog.html?id=' + blogID;
+        })
+    ] });
+$('#root').append([
+    m(Title),
+    m(Loading),
+    m(Alerts),
+    m(Form).hide(),
+    m(EditBtnArea).hide(),
+]);
+init();
+function init() {
+    if (!blogID) {
+        Loading.hide();
+        Form.elem().show();
+        return;
+    }
+    $('title').text('Edit blog');
+    Title.elem().text(`Edit Blog (id:${blogID})`);
+    const body = util.newFormData('id', blogID);
+    util.ajax({ method: 'POST', url: '/api/get-blog', alerts: Alerts, body: body }, (resp) => {
+        const blog = resp;
+        Form.elem().show();
+        NameInput.elem().val(blog.Name);
+        AuthorInput.elem().val(blog.Author);
+        WebsiteInput.elem().val(blog.Website);
+        FeedInput.elem().val(blog.Feed);
+        THoldInput.elem().val(blog.Threshold);
+        DescInput.elem().val(blog.Description);
+        LinksInput.elem().val(blog.Links);
+    }, undefined, () => {
+        Loading.hide();
+    });
+}
+function newBlogForm() {
+    const links = util.val(LinksInput)
+        .split('\n').map(line => line.trim()).filter(line => line.length > 0)
+        .join('\n');
+    return {
+        id: blogID,
+        name: util.val(NameInput).trim(),
+        author: util.val(AuthorInput).trim(),
+        website: util.val(WebsiteInput).trim(),
+        feed: util.val(FeedInput).trim(),
+        thold: util.val(THoldInput),
+        desc: util.val(DescInput).trim(),
+        links: links,
+    };
+}
 function create_textarea(rows = 2) {
     return cc('textarea', { classes: 'form-textarea', attr: { 'rows': rows } });
 }
@@ -43,23 +98,4 @@ function create_item(comp, name, description) {
         m(comp).addClass('form-textinput'),
         m('div').addClass('form-text').text(description),
     ]);
-}
-$('#root').append([
-    m(Title),
-    m(Alerts),
-    m(Form),
-]);
-function newBlogForm() {
-    const links = util.val(LinksInput)
-        .split('\n').map(line => line.trim()).filter(line => line.length > 0);
-    return {
-        id: blogID,
-        name: util.val(NameInput).trim(),
-        author: util.val(AuthorInput).trim(),
-        website: util.val(WebsiteInput).trim(),
-        feed: util.val(FeedInput).trim(),
-        thold: util.val(THoldInput),
-        desc: util.val(DescInput).trim(),
-        links: links.join('\n'),
-    };
 }

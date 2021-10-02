@@ -1,6 +1,10 @@
 package database
 
-import "database/sql"
+import (
+	"database/sql"
+
+	"ahui2016.github.com/blogs-navi/stmt"
+)
 
 type TX interface {
 	Exec(string, ...interface{}) (sql.Result, error)
@@ -28,6 +32,7 @@ type Row interface {
 
 func insertBlog(tx TX, blog *Blog) error {
 	_, err := tx.Exec(
+		stmt.InsertBlog,
 		blog.ID,
 		blog.Name,
 		blog.Author,
@@ -44,4 +49,24 @@ func insertBlog(tx TX, blog *Blog) error {
 		blog.Category,
 	)
 	return err
+}
+
+func scanBlog(row Row) (blog Blog, err error) {
+	err = row.Scan(
+		&blog.ID,
+		&blog.Name,
+		&blog.Author,
+		&blog.Website,
+		&blog.Links,
+		&blog.Description,
+		&blog.Feed,
+		&blog.FeedDate,
+		&blog.FeedSize,
+		&blog.LastUpdate,
+		&blog.Threshold,
+		&blog.Status,
+		&blog.ErrMsg,
+		&blog.Category,
+	)
+	return
 }

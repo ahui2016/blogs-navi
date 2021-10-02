@@ -12,8 +12,11 @@ func main() {
 	e.Static("/public", "public")
 	e.File("/", "public/index.html")
 
+	api := e.Group("/api", sleep)
+	api.POST("/get-blog", getBlogByID)
+
 	// admin := e.Group("/admin", checkPassword)
-	admin := e.Group("/admin")
+	admin := e.Group("/admin", sleep)
 	admin.POST("/add-blog", addBlogHandler)
 
 	e.Logger.Fatal(e.Start(*addr))

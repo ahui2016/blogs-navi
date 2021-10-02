@@ -38,6 +38,17 @@ label {
   border-radius: .25rem;
 }
 
+.Loading {
+  font-weight: bold;
+  animation: blinker 2s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
 @media (prefers-color-scheme: light) {
   body {
     color: #454545;

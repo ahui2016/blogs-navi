@@ -1,5 +1,22 @@
 import { mjElement, mjComponent, m, cc, span } from './mj.js';
 
+export interface Blog {
+  ID          :string;
+	Name        :string;
+	Author      :string;
+	Website     :string; // 博客或网站的网址
+	Links       :string; // 与博客或作者有关的其他网址，用换行符分隔
+	Description :string;
+	Feed        :string; // 用来判断网站有无更新的网址 (比如 RSS feed)
+	FeedDate    :number; // 上次检查时间 (时间戳)
+	FeedSize    :number; // 上次的 Feed 的内容的体积
+	LastUpdate  :number; // 上次更新时间 (时间戳)
+	Threshold   :number; // 当本次体积与 FeedSize 之差 (绝对值) 大于该阈值时判断为有更新
+	Status      :string;
+	ErrMsg      :string; // 上次失败原因 (成功时设定为空字符串)
+	Category    :string; // 类别 (预留，暂不使用)
+}
+
 // 获取地址栏的参数。
 export function getUrlParam(param: string): string {
   const queryString = new URLSearchParams(document.location.search);
@@ -22,6 +39,23 @@ export function enable(id: string): void {
   } else {
     $(id).css('pointer-events', 'auto');
   }
+}
+
+export interface mjLoading extends mjComponent {
+  hide: () => void;
+  show: () => void;
+}
+
+export function CreateLoading(align?: 'center'): mjLoading {
+  let classes = 'Loading';
+  if (align == 'center') { classes += ' text-center'; }
+
+  const loading = cc('div', {
+    text:'Loading...',classes:classes}) as mjLoading;
+
+  loading.hide = () => { loading.elem().hide() };
+  loading.show = () => { loading.elem().show() };
+  return loading;
 }
 
 export interface mjAlerts extends mjComponent {
@@ -166,4 +200,10 @@ export function val(obj: mjElement | mjComponent): string {
 
 export function itemID(id: string): string {
   return `i${id}`;
+}
+
+export function newFormData(name: string, value: string) {
+  const fd = new FormData();
+  fd.set(name, value);
+  return fd;
 }

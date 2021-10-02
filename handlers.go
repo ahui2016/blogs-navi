@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"strconv"
 	"strings"
@@ -39,6 +40,17 @@ func addBlogHandler(c echo.Context) error {
 		return err
 	}
 	return c.JSON(OK, Text{blog.ID})
+}
+
+func getBlogByID(c echo.Context) error {
+	id := c.FormValue("id")
+	blog, err := db.GetBlogByID(id)
+	if err == sql.ErrNoRows {
+		return fmt.Errorf("not found blog(id:%s)", id)
+	} else if err != nil {
+		return err
+	}
+	return c.JSON(OK, blog)
 }
 
 // getFormValue gets the c.FormValue(key), trims its spaces,

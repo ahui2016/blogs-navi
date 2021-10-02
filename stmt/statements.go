@@ -55,6 +55,11 @@ const GetTextValue = `SELECT text_value FROM metadata WHERE name=?;`
 const UpdateTextValue = `UPDATE metadata SET text_value=? WHERE name=?;`
 
 const InsertBlog = `INSERT INTO blog (
-	id, name, author, website, links, description, feed, feedate,
+	id, name, author, website, links, description, feed, feeddate,
 	feedsize, lastupdate, threshold, status, errmsg, category
 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
+
+const GetBlogByID = `SELECT
+  id, name, author, website, links, description, feed, feeddate,
+	feedsize, lastupdate, threshold, status, errmsg, category
+	FROM blog WHERE id=?;`
