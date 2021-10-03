@@ -53,6 +53,10 @@ func (db *DB) InsertBlog(blog *Blog) (err error) {
 	return tx.Commit()
 }
 
+func (db *DB) UpdateBlog(blog *Blog) error {
+	return updateBlog(db.DB, blog)
+}
+
 func (db *DB) GetBlogByID(id string) (Blog, error) {
 	row := db.DB.QueryRow(stmt.GetBlogByID, id)
 	return scanBlog(row)

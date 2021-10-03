@@ -18,6 +18,7 @@ func main() {
 	// admin := e.Group("/admin", checkPassword)
 	admin := e.Group("/admin", sleep)
 	admin.POST("/add-blog", addBlogHandler)
+	admin.POST("/update-blog", updateBlogHandler)
 
 	e.Logger.Fatal(e.Start(*addr))
 }

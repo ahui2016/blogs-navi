@@ -51,6 +51,21 @@ func insertBlog(tx TX, blog *Blog) error {
 	return err
 }
 
+func updateBlog(tx TX, blog *Blog) error {
+	_, err := tx.Exec(
+		stmt.UpdateBlog,
+		blog.Name,
+		blog.Author,
+		blog.Website,
+		blog.Links,
+		blog.Description,
+		blog.Feed,
+		blog.Threshold,
+		blog.ID,
+	)
+	return err
+}
+
 func scanBlog(row Row) (blog Blog, err error) {
 	err = row.Scan(
 		&blog.ID,

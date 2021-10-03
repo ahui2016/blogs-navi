@@ -5,7 +5,7 @@ const CreateTables = `
 
 CREATE TABLE IF NOT EXISTS blog
 (
-	id            text    PRIMARY KEY,
+	id            text    PRIMARY KEY COLLATE NOCASE,
 	name          text    NOT NULL,
 	author        text    NOT NULL,
 	website       text    NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS blog
 
 CREATE TABLE IF NOT EXISTS post
 (
-	id            text    PRIMARY KEY,
+	id            text    PRIMARY KEY COLLATE NOCASE,
 	blog_id       text    REFERENCES blog(id) ON DELETE CASCADE,
 	url           text    NOT NULL,
 	title         text    NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS post
 
 CREATE TABLE IF NOT EXISTS thumb
 (
-	id            text    PRIMARY KEY,
+	id            text    PRIMARY KEY COLLATE NOCASE,
 	blog_id       text    REFERENCES blog(id) ON DELETE CASCADE,
 	created_at    int     NOT NULL,
 	url           text    NOT NULL
@@ -63,3 +63,7 @@ const GetBlogByID = `SELECT
   id, name, author, website, links, description, feed, feeddate,
 	feedsize, lastupdate, threshold, status, errmsg, category
 	FROM blog WHERE id=?;`
+
+const UpdateBlog = `UPDATE blog
+	SET name=?, author=?, website=?, links=?, description=?, feed=?, threshold=?
+	WHERE id=?;`

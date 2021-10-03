@@ -42,11 +42,28 @@ func addBlogHandler(c echo.Context) error {
 	return c.JSON(OK, Text{blog.ID})
 }
 
+func updateBlogHandler(c echo.Context) error {
+	blog, err := getBlogValue(c)
+	if err != nil {
+		return err
+	}
+	blog.ID = strings.TrimSpace(blog.ID)
+	if blog.ID == "" {
+		return fmt.Errorf("id is empty, need an id")
+	}
+	if _, err = db.GetBlogByID(blog.ID); err == sql.ErrNoRows {
+		return c.JSON(404, Text{fmt.Sprintf("not found blog(id:%s)", blog.ID)})
+	} else if err != nil {
+		return err
+	}
+	return db.UpdateBlog(blog)
+}
+
 func getBlogByID(c echo.Context) error {
 	id := c.FormValue("id")
 	blog, err := db.GetBlogByID(id)
 	if err == sql.ErrNoRows {
-		return fmt.Errorf("not found blog(id:%s)", id)
+		return c.JSON(404, Text{fmt.Sprintf("not found blog(id:%s)", id)})
 	} else if err != nil {
 		return err
 	}
@@ -64,9 +81,6 @@ func getFormValue(c echo.Context, key string) (string, error) {
 }
 
 func getBlogValue(c echo.Context) (blog *Blog, err error) {
-	// if id == "" {
-	// 	return nil, fmt.Errorf("id is empty, need an id")
-	// }
 	name, e1 := getFormValue(c, "name")
 	website, e2 := getFormValue(c, "website")
 	feed, e3 := getFormValue(c, "feed")
