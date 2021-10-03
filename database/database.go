@@ -61,3 +61,19 @@ func (db *DB) GetBlogByID(id string) (Blog, error) {
 	row := db.DB.QueryRow(stmt.GetBlogByID, id)
 	return scanBlog(row)
 }
+
+func (db *DB) AllBlogs() (blogs []*Blog, err error) {
+	rows, err := db.DB.Query(stmt.AllBlogs)
+	if err != nil {
+		return
+	}
+	defer rows.Close()
+	for rows.Next() {
+		blog, err := scanBlog(rows)
+		if err != nil {
+			return nil, err
+		}
+		blogs = append(blogs, &blog)
+	}
+	return blogs, rows.Err()
+}

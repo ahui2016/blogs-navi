@@ -70,6 +70,14 @@ func getBlogByID(c echo.Context) error {
 	return c.JSON(OK, blog)
 }
 
+func getAllBlogs(c echo.Context) error {
+	blogs, err := db.AllBlogs()
+	if err != nil {
+		return err
+	}
+	return c.JSON(OK, blogs)
+}
+
 // getFormValue gets the c.FormValue(key), trims its spaces,
 // and checks if it is empty or not.
 func getFormValue(c echo.Context, key string) (string, error) {

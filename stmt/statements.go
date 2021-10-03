@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS blog
 	category      text    NOT NULL
 );
 
+CREATE INDEX IF NOT EXISTS idx_blog_lastupdate ON blog(lastupdate);
+
 CREATE TABLE IF NOT EXISTS post
 (
 	id            text    PRIMARY KEY COLLATE NOCASE,
@@ -58,6 +60,11 @@ const InsertBlog = `INSERT INTO blog (
 	id, name, author, website, links, description, feed, feeddate,
 	feedsize, lastupdate, threshold, status, errmsg, category
 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
+
+const AllBlogs = `SELECT
+	id, name, author, website, links, description, feed, feeddate,
+	feedsize, lastupdate, threshold, status, errmsg, category
+	FROM blog ORDER BY lastupdate DESC;`
 
 const GetBlogByID = `SELECT
   id, name, author, website, links, description, feed, feeddate,
