@@ -22,7 +22,7 @@ const UpdateBtn = cc('button', {text:'Update',classes:'btn'});
 
 const Form = cc('form', {attr:{'autocomplete':'off'}, children: [
   create_item(NameInput, 'Name', '博客或网站名称'),
-  create_item(AuthorInput, 'Author', '该博客或网站的作者/站长'),
+  create_item(AuthorInput, 'Author', '该博客或网站的作者/站长，也可填写 email'),
   create_item(WebsiteInput, 'Website', '该博客或网站的网址'),
   create_item(FeedInput, 'Feed', '用来判断有无更新的网址 (比如 RSS 或文章列表的网址)'),
   create_item(THoldInput, 'Threshold', '用于判断有无更新的阈值 (单位:byte), 留空或填写 0 将采用默认值'),
@@ -81,8 +81,7 @@ function init() {
   $('title').text('Edit blog');
   Title.elem().text(`Edit Blog (id:${blogID})`);
 
-  const body = util.newFormData('id', blogID);
-  util.ajax({method:'POST',url:'/api/get-blog',alerts:Alerts,body:body},
+  util.ajax({method:'POST',url:'/api/get-blog',alerts:Alerts,body:{id: blogID}},
     (resp) => {
       const blog = resp as util.Blog;
       Form.elem().show();

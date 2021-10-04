@@ -36,11 +36,16 @@ function BlogItem(blog: util.Blog): mjComponent {
   const checkedAt = dayjs.unix(blog.FeedDate).format('YYYY-MM-DD');
   const self = cc('div', {id:blog.ID, classes:'BlogItem', children:[
     m('div').append([
-      span(`[id: ${blog.ID}]`),
+      span('[id:'),
+      m('a').text(blog.ID).attr({'href':'/public/blog-info.html?id='+blog.ID,title:'详细资料'}),
+      span(']'),
       span(blog.Status).addClass('badge-grey ml-2').attr('title', '上次检测结果'),
     ]),
-    m('a').text(blog.Name).attr({href:blog.Website,target:'_blank'}),
-    m('div').text(blog.Description),
+    m('div').append([
+      m('a').text(blog.Name).attr({href:blog.Website,target:'_blank'}),
+      span(' by '+blog.Author),
+    ]),
+    m('div').text(blog.Description).addClass('text-grey'),
     m('div').append([
       span(' checked at: '+checkedAt), span(' updated at: '+updatedAt),
     ]),

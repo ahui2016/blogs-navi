@@ -19,6 +19,10 @@ label {
   display: inline-block;
 }
 
+.BlogItem {
+  margin-bottom: 1.5rem;
+}
+
 .ml-1 {
   margin-left: 0.25rem;
 }
@@ -100,17 +104,19 @@ label {
   }  
   .btn {
     color: #454545;
-    border-color: #737373;
+    border-color: #71717a;
   }
   .form-textinput {
-    border-color: #737373;
+    border-color: #71717a;
   }
+
+  .text-grey,
   .form-text {
-    color: #a3a3a3;
+    color: #a1a1aa;
   }
 
   .badge-grey {
     color: #fefefe;
-    background-color: #737373; 
+    background-color: #a1a1aa; 
   }
 }

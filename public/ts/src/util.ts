@@ -202,7 +202,7 @@ export function itemID(id: string): string {
   return `i${id}`;
 }
 
-export function newFormData(name: string, value: string) {
+function newFormData(name: string, value: string) {
   const fd = new FormData();
   fd.set(name, value);
   return fd;
