@@ -6,6 +6,14 @@ body {
   line-height: 1.5;
 }
 
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 label {
   font-weight: bold;
   display: inline-block;
@@ -45,6 +53,15 @@ label {
   padding: .375rem .75rem;
   border: 1px solid;
   border-radius: .25rem;
+}
+
+.badge-grey {
+  cursor: default;
+  line-height: 1;
+  font-size: .75em;
+  padding: .35em .65em;
+  border-radius: 50rem;
+  display: inline-block;
 }
 
 .Loading {
@@ -90,5 +107,10 @@ label {
   }
   .form-text {
     color: #a3a3a3;
+  }
+
+  .badge-grey {
+    color: #fefefe;
+    background-color: #737373; 
   }
 }

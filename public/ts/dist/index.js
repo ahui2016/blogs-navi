@@ -29,11 +29,14 @@ function BlogItem(blog) {
     const checkedAt = dayjs.unix(blog.FeedDate).format('YYYY-MM-DD');
     const self = cc('div', { id: blog.ID, classes: 'BlogItem', children: [
             m('div').append([
-                span(blog.Status),
-                span(' updated at: ' + updatedAt), span(' checked at: ' + checkedAt),
+                span(`[id:${blog.ID}]`),
+                span(blog.Status).addClass('badge-grey ml-2').attr('title', '上次检测结果'),
             ]),
             m('a').text(blog.Name).attr({ href: blog.Website, target: '_blank' }),
             m('div').text(blog.Description),
+            m('div').append([
+                span(' checked at: ' + checkedAt), span(' updated at: ' + updatedAt),
+            ]),
         ] });
     return self;
 }
