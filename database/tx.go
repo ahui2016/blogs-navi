@@ -61,6 +61,7 @@ func updateBlog(tx TX, blog *Blog) error {
 		blog.Description,
 		blog.Feed,
 		blog.Threshold,
+		blog.Category,
 		blog.ID,
 	)
 	return err
@@ -84,4 +85,17 @@ func scanBlog(row Row) (blog Blog, err error) {
 		&blog.Category,
 	)
 	return
+}
+
+func updateFeedResult(tx TX, blog Blog) error {
+	_, err := tx.Exec(
+		stmt.UpdateFeedResult,
+		blog.FeedDate,
+		blog.FeedSize,
+		blog.LastUpdate,
+		blog.Status,
+		blog.ErrMsg,
+		blog.ID,
+	)
+	return err
 }

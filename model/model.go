@@ -21,7 +21,7 @@ type Blog struct {
 	Threshold   int64  // 当本次体积与 FeedSize 之差 (绝对值) 大于该阈值时判断为有更新
 	Status      Status
 	ErrMsg      string // 上次失败原因 (成功时设定为空字符串)
-	Category    string // 类别 (预留，暂不使用)
+	Category    string // 类别，自由填写任意字符串 (筛选类别时按前缀筛选)
 }
 
 type Post struct {

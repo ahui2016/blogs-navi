@@ -61,16 +61,20 @@ const InsertBlog = `INSERT INTO blog (
 	feedsize, lastupdate, threshold, status, errmsg, category
 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
 
-const AllBlogs = `SELECT
+const BlogsWithFeed = `SELECT
 	id, name, author, website, links, description, feed, feeddate,
 	feedsize, lastupdate, threshold, status, errmsg, category
-	FROM blog ORDER BY lastupdate DESC;`
+	FROM blog WHERE feed<>'' ORDER BY lastupdate DESC;`
 
 const GetBlogByID = `SELECT
   id, name, author, website, links, description, feed, feeddate,
 	feedsize, lastupdate, threshold, status, errmsg, category
 	FROM blog WHERE id=?;`
 
-const UpdateBlog = `UPDATE blog
-	SET name=?, author=?, website=?, links=?, description=?, feed=?, threshold=?
+const UpdateBlog = `UPDATE blog SET name=?, author=?,
+	website=?, links=?, description=?, feed=?, threshold=?, category=?
+	WHERE id=?;`
+
+const UpdateFeedResult = `UPDATE blog
+	SET feeddate=?, feedsize=?, lastupdate=?, status=?, errmsg=?
 	WHERE id=?;`

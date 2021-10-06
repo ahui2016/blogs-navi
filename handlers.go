@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"strconv"
 	"strings"
@@ -51,9 +50,7 @@ func updateBlogHandler(c echo.Context) error {
 	if blog.ID == "" {
 		return fmt.Errorf("id is empty, need an id")
 	}
-	if _, err = db.GetBlogByID(blog.ID); err == sql.ErrNoRows {
-		return c.JSON(404, Text{fmt.Sprintf("not found blog(id:%s)", blog.ID)})
-	} else if err != nil {
+	if _, err = db.GetBlogByID(blog.ID); err != nil {
 		return err
 	}
 	return db.UpdateBlog(blog)
@@ -62,20 +59,28 @@ func updateBlogHandler(c echo.Context) error {
 func getBlogByID(c echo.Context) error {
 	id := c.FormValue("id")
 	blog, err := db.GetBlogByID(id)
-	if err == sql.ErrNoRows {
-		return c.JSON(404, Text{fmt.Sprintf("not found blog(id:%s)", id)})
-	} else if err != nil {
+	if err != nil {
 		return err
 	}
 	return c.JSON(OK, blog)
 }
 
-func getAllBlogs(c echo.Context) error {
-	blogs, err := db.AllBlogs()
+func getBlogs(c echo.Context) error {
+	blogs, err := db.GetBlogs(c.FormValue("category"))
 	if err != nil {
 		return err
 	}
 	return c.JSON(OK, blogs)
+}
+
+func updateFeedHandler(c echo.Context) error {
+	feedsize, err := getNumber(c, "feedsize")
+	if err != nil {
+		return err
+	}
+	errMsg := c.FormValue("errmsg")
+	id := c.FormValue("id")
+	return db.UpdateFeedResult(feedsize, errMsg, id)
 }
 
 // getFormValue gets the c.FormValue(key), trims its spaces,
@@ -96,6 +101,8 @@ func getBlogValue(c echo.Context) (blog *Blog, err error) {
 	if err := util.WrapErrors(e1, e2, e3, e4); err != nil {
 		return nil, err
 	}
+
+	// 由于用户只有管理员一个人，因此有些输入可以信任前端（不检查空值）。
 	return &Blog{
 		ID:          c.FormValue("id"),
 		Name:        name,
@@ -105,6 +112,7 @@ func getBlogValue(c echo.Context) (blog *Blog, err error) {
 		Description: c.FormValue("desc"),
 		Feed:        feed,
 		Threshold:   thold,
+		Category:    c.FormValue("category"),
 	}, nil
 }
 

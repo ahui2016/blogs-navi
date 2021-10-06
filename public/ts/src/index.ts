@@ -1,5 +1,9 @@
+import { ajax } from 'jquery';
 import { mjElement, mjComponent, m, cc, span, appendToList } from './mj.js';
 import * as util from './util.js';
+
+let update_count = 0;
+let blogs: util.Blog[];
 
 const Loading = util.CreateLoading('center');
 const Alerts = util.CreateAlerts();
@@ -21,9 +25,10 @@ $('#root').append([
 init();
 
 function init() {
-  util.ajax({method:'GET',url:'/api/get-all-blogs',alerts:Alerts},
+  const body = {category: "with-feed"};
+  util.ajax({method:'GET',url:'/api/get-blogs',alerts:Alerts,body:body},
     resp => {
-      const blogs = resp as util.Blog[];
+      blogs = resp as util.Blog[];
       appendToList(BlogList, blogs.map(BlogItem));
     }, undefined, () => {
       Loading.hide();
@@ -51,4 +56,25 @@ function BlogItem(blog: util.Blog): mjComponent {
     ]),
   ]});
   return self;
+}
+
+function getFeedSize(feed: string): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => { reject('timeout'); }, 10*1000);
+    util.ajax({method:'GET',url:feed,responseType:'blob'},
+      (resp) =>{ resolve((resp as Blob).size); },
+      (_, errMsg) => { reject(errMsg); },
+      () => { clearTimeout(timeout); });
+  });
+}
+
+function updateFeed(feedsize: string, errmsg: string, id: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => { reject('timeout'); }, 10*1000);
+    const body = {feedsize:feedsize,errmsg:errmsg,id:id}
+    util.ajax({method:'POST',url:'/admin/update-feed',body:body},
+      () => { resolve(); },
+      (_, errMsg) => { reject(errMsg); },
+      () => { clearTimeout(timeout); });
+  });
 }

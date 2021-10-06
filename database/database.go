@@ -2,6 +2,8 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
+	"strings"
 
 	"ahui2016.github.com/blogs-navi/model"
 	"ahui2016.github.com/blogs-navi/stmt"
@@ -57,13 +59,21 @@ func (db *DB) UpdateBlog(blog *Blog) error {
 	return updateBlog(db.DB, blog)
 }
 
-func (db *DB) GetBlogByID(id string) (Blog, error) {
+func (db *DB) GetBlogByID(id string) (blog Blog, err error) {
 	row := db.DB.QueryRow(stmt.GetBlogByID, id)
-	return scanBlog(row)
+	blog, err = scanBlog(row)
+	if err == sql.ErrNoRows {
+		err = fmt.Errorf("not found blog(id:%s)", id)
+	}
+	return
 }
 
-func (db *DB) AllBlogs() (blogs []*Blog, err error) {
-	rows, err := db.DB.Query(stmt.AllBlogs)
+func (db *DB) GetBlogs(category string) (blogs []*Blog, err error) {
+	var query string
+	if category == "with-feed" {
+		query = stmt.BlogsWithFeed
+	}
+	rows, err := db.DB.Query(query)
 	if err != nil {
 		return
 	}
@@ -76,4 +86,34 @@ func (db *DB) AllBlogs() (blogs []*Blog, err error) {
 		blogs = append(blogs, &blog)
 	}
 	return blogs, rows.Err()
+}
+
+func (db *DB) UpdateFeedResult(feedsize int64, errMsg, id string) error {
+	blog, err := db.GetBlogByID(id)
+	if err != nil {
+		return err
+	}
+
+	// 不管是否出错，都已经执行了一次检查。
+	blog.FeedDate = util.TimeNow()
+	blog.ErrMsg = strings.TrimSpace(errMsg)
+
+	// 如果数据量太少，很可能是错误
+	if feedsize < 128 {
+		blog.ErrMsg = "FeedSize is too small"
+	}
+
+	// 出错时
+	if blog.ErrMsg != "" {
+		blog.Status = model.Fail
+		return updateFeedResult(db.DB, blog)
+	}
+
+	// 成功时
+	blog.Status = model.Success
+	if util.Abs(feedsize-blog.FeedSize) > blog.Threshold {
+		blog.FeedSize = feedsize
+		blog.LastUpdate = blog.FeedDate
+	}
+	return updateFeedResult(db.DB, blog)
 }

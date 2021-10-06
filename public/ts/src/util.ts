@@ -14,7 +14,7 @@ export interface Blog {
 	Threshold   :number; // 当本次体积与 FeedSize 之差 (绝对值) 大于该阈值时判断为有更新
 	Status      :string;
 	ErrMsg      :string; // 上次失败原因 (成功时设定为空字符串)
-	Category    :string; // 类别 (预留，暂不使用)
+	Category    :string; // 类别
 }
 
 // 获取地址栏的参数。

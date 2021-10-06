@@ -73,3 +73,11 @@ func Base64Encode(data []byte) string {
 func Base64Decode(s string) ([]byte, error) {
 	return base64.StdEncoding.DecodeString(s)
 }
+
+// Abs 返回两个整数之差的绝对值。因为标准库中的 math.Abs 只处理浮点数，如果处理整数会很不方便。
+func Abs(x int64) int64 {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
