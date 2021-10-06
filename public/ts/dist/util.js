@@ -35,14 +35,18 @@ export function CreateLoading(align) {
     loading.show = () => { loading.elem().show(); };
     return loading;
 }
+/**
+ * 当 max == undefined 时，给 max 一个默认值 (比如 3)。
+ * 当 max <= 0 时，不限制数量。
+ */
 export function CreateAlerts(max) {
     const alerts = cc('div');
-    alerts.max = max ? max : 3;
+    alerts.max = max == undefined ? 3 : max;
     alerts.count = 0;
     alerts.insertElem = (elem) => {
         $(alerts.id).prepend(elem);
         alerts.count++;
-        if (alerts.count > alerts.max) {
+        if (alerts.max > 0 && alerts.count > alerts.max) {
             $(`${alerts.id} div:last-of-type`).remove();
         }
     };
@@ -148,7 +152,7 @@ export function val(obj) {
 export function itemID(id) {
     return `i${id}`;
 }
-export function newFormData(name, value) {
+function newFormData(name, value) {
     const fd = new FormData();
     fd.set(name, value);
     return fd;

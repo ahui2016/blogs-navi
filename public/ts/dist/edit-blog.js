@@ -11,6 +11,7 @@ const FeedInput = create_textinput();
 const THoldInput = cc('input', { attr: { type: 'number' } });
 const DescInput = create_textarea();
 const LinksInput = create_textarea(3);
+const CatInput = create_textinput();
 const SubmitAlerts = util.CreateAlerts();
 const SubmitBtn = cc('button', { text: 'Submit', classes: 'btn' });
 const UpdateBtn = cc('button', { text: 'Update', classes: 'btn' });
@@ -22,6 +23,8 @@ const Form = cc('form', { attr: { 'autocomplete': 'off' }, children: [
         create_item(THoldInput, 'Threshold', '用于判断有无更新的阈值 (单位:byte), 留空或填写 0 将采用默认值'),
         create_item(DescInput, 'Description', '博客/网站的简介、备注'),
         create_item(LinksInput, 'Links', '相关网址 (比如作者的 twitter), 请以 http 开头，每行一个网址'),
+        create_item(LinksInput, 'Links', '相关网址 (比如作者的 twitter), 请以 http 开头，每行一个网址'),
+        create_item(CatInput, 'Category', '类别，自由填写任意字符串 (筛选类别时按前缀筛选)'),
         m(SubmitAlerts),
         m('div').addClass('text-center my-5').append([
             m(SubmitBtn).on('click', (event) => {
@@ -66,8 +69,7 @@ function init() {
     }
     $('title').text('Edit blog');
     Title.elem().text(`Edit Blog (id:${blogID})`);
-    const body = util.newFormData('id', blogID);
-    util.ajax({ method: 'POST', url: '/api/get-blog', alerts: Alerts, body: body }, (resp) => {
+    util.ajax({ method: 'POST', url: '/api/get-blog', alerts: Alerts, body: { id: blogID } }, (resp) => {
         const blog = resp;
         Form.elem().show();
         SubmitBtn.elem().hide();
@@ -79,6 +81,7 @@ function init() {
         THoldInput.elem().val(blog.Threshold);
         DescInput.elem().val(blog.Description);
         LinksInput.elem().val(blog.Links);
+        CatInput.elem().val(blog.Category);
     }, undefined, () => {
         Loading.hide();
     });
@@ -96,6 +99,7 @@ function newBlogForm() {
         thold: util.val(THoldInput),
         desc: util.val(DescInput).trim(),
         links: links,
+        category: util.val(CatInput).trim(),
     };
 }
 function create_textarea(rows = 2) {

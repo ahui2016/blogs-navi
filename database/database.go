@@ -99,7 +99,7 @@ func (db *DB) UpdateFeedResult(feedsize int64, errMsg, id string) error {
 	blog.ErrMsg = strings.TrimSpace(errMsg)
 
 	// 如果数据量太少，很可能是错误
-	if feedsize < 128 {
+	if blog.ErrMsg == "" && feedsize < 128 {
 		blog.ErrMsg = "FeedSize is too small"
 	}
 

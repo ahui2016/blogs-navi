@@ -66,15 +66,19 @@ export interface mjAlerts extends mjComponent {
   clear: () => mjAlerts;
 }
 
+/**
+ * 当 max == undefined 时，给 max 一个默认值 (比如 3)。
+ * 当 max <= 0 时，不限制数量。
+ */
 export function CreateAlerts(max?: number): mjAlerts {
   const alerts = cc('div') as mjAlerts;
-  alerts.max = max ? max : 3;
+  alerts.max = max == undefined ? 3 : max;
   alerts.count = 0;
 
   alerts.insertElem = (elem) => {
     $(alerts.id).prepend(elem);
     alerts.count++;
-    if (alerts.count > alerts.max) {
+    if (alerts.max > 0 && alerts.count > alerts.max) {
       $(`${alerts.id} div:last-of-type`).remove();
     }
   };
