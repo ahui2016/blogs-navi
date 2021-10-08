@@ -17,7 +17,7 @@ func main() {
 	api.POST("/get-blogs", getBlogs)
 
 	// admin := e.Group("/admin", checkPassword)
-	admin := e.Group("/admin", sleep)
+	admin := e.Group("/admin", sleep, checkPassword)
 	admin.POST("/add-blog", addBlogHandler)
 	admin.POST("/update-blog", updateBlogHandler)
 	admin.POST("/update-feed", updateFeedHandler)

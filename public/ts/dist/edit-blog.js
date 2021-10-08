@@ -4,14 +4,15 @@ let blogID = util.getUrlParam('id');
 const Loading = util.CreateLoading('center');
 const Alerts = util.CreateAlerts();
 const Title = cc('h1', { text: 'Add a new blog' });
-const NameInput = create_textinput();
-const AuthorInput = create_textinput();
-const WebsiteInput = create_textinput();
-const FeedInput = create_textinput();
+const NameInput = create_input();
+const AuthorInput = create_input();
+const WebsiteInput = create_input();
+const FeedInput = create_input();
 const THoldInput = cc('input', { attr: { type: 'number' } });
 const DescInput = create_textarea();
 const LinksInput = create_textarea(3);
-const CatInput = create_textinput();
+const CatInput = create_input();
+const PwdInput = create_input('password');
 const SubmitAlerts = util.CreateAlerts();
 const SubmitBtn = cc('button', { text: 'Submit', classes: 'btn' });
 const UpdateBtn = cc('button', { text: 'Update', classes: 'btn' });
@@ -23,8 +24,8 @@ const Form = cc('form', { attr: { 'autocomplete': 'off' }, children: [
         create_item(THoldInput, 'Threshold', '用于判断有无更新的阈值 (单位:byte), 留空或填写 0 将采用默认值'),
         create_item(DescInput, 'Description', '博客/网站的简介、备注'),
         create_item(LinksInput, 'Links', '相关网址 (比如作者的 twitter), 请以 http 开头，每行一个网址'),
-        create_item(LinksInput, 'Links', '相关网址 (比如作者的 twitter), 请以 http 开头，每行一个网址'),
         create_item(CatInput, 'Category', '类别，自由填写任意字符串 (筛选类别时按前缀筛选)'),
+        create_item(PwdInput, 'Password', '必须输入正确的管理员密码才能提交表单'),
         m(SubmitAlerts),
         m('div').addClass('text-center my-5').append([
             m(SubmitBtn).on('click', (event) => {
@@ -91,6 +92,7 @@ function newBlogForm() {
         .split('\n').map(line => line.trim()).filter(line => line.length > 0)
         .join('\n');
     return {
+        pwd: util.val(PwdInput),
         id: blogID,
         name: util.val(NameInput).trim(),
         author: util.val(AuthorInput).trim(),
@@ -105,8 +107,8 @@ function newBlogForm() {
 function create_textarea(rows = 2) {
     return cc('textarea', { classes: 'form-textarea', attr: { 'rows': rows } });
 }
-function create_textinput() {
-    return cc('input', { attr: { type: 'text' } });
+function create_input(type = 'text') {
+    return cc('input', { attr: { type: type } });
 }
 function create_item(comp, name, description) {
     return m('div').addClass('mb-3').append([

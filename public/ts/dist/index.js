@@ -36,7 +36,7 @@ function BlogItem(blog) {
     const self = cc('div', { id: blog.ID, classes: 'BlogItem', children: [
             m('div').append([
                 span('[id:'),
-                m('a').text(blog.ID).attr({ 'href': '/public/blog-info.html?id=' + blog.ID, title: '详细资料' }),
+                m('a').text(blog.ID).attr({ 'href': '/public/edit-blog.html?id=' + blog.ID, title: '详细资料' }),
                 span(']'),
                 span(blog.Status).addClass('badge-grey ml-2').attr('title', '上次检测结果'),
             ]),
@@ -65,15 +65,15 @@ window.checkBlogs = async function () {
         Alerts.clear();
         BlogList.elem().hide();
         Logs.insert('info', '正在检查: ' + blog.Name);
-        // if (dayjs().unix() - blog.FeedDate < 24*Hour) {
-        //   Logs.insert('info', '距离上次检查时间未超过 24 小时，忽略本次检查。');
-        //   continue;
-        // }
+        if (dayjs().unix() - blog.FeedDate < 24 * Hour) {
+            Logs.insert('info', '距离上次检查时间未超过 24 小时，忽略本次检查。');
+            continue;
+        }
         let feedsize = 0;
         let errmsg = '';
         try {
             feedsize = await getFeedSize(blog.Feed);
-            Logs.insert('success', `Get ${feedsize} bytes`);
+            Logs.insert('success', `Get ${feedsize} bytes from ${blog.Feed}`);
         }
         catch (err) {
             errmsg = `${err}`;

@@ -81,3 +81,28 @@ func Abs(x int64) int64 {
 	}
 	return x
 }
+
+func ReadFileFirstLine(name string) ([]byte, error) {
+	l, err := os.ReadFile(name)
+	if err != nil {
+		return nil, err
+	}
+	i := firstLineBreak(string(l))
+	if i < 0 {
+		return l, nil
+	}
+	return l[:i], nil
+}
+
+// firstLineBreak 获取第一个 \r\n 或第一个 \n 的位置
+func firstLineBreak(s string) int {
+	i := strings.Index(s, "\n")
+	i2 := strings.Index(s, "\r\n")
+	if i2 < 0 {
+		return i
+	}
+	if i > i2 {
+		i = i2
+	}
+	return i
+}
