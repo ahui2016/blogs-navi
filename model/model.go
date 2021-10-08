@@ -29,6 +29,7 @@ type Post struct {
 	BlogID    string
 	Url       string
 	Title     string
+	Contents  string
 	CreatedAt int64
 	Hide      bool
 }
@@ -37,5 +38,5 @@ type Thumb struct {
 	ID        string
 	BlogID    string
 	CreatedAt int64
-	Url       string // Url 有内容时优先采用 Url, Url 为空字符串时则利用 ID 生成本地链接
+	Data      []byte
 }

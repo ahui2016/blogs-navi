@@ -56,6 +56,14 @@ func updateBlogHandler(c echo.Context) error {
 	return db.UpdateBlog(blog)
 }
 
+func deleteBlogHandler(c echo.Context) error {
+	id := c.FormValue("id")
+	if _, err := db.GetBlogByID(id); err != nil {
+		return err
+	}
+	return db.DeleteIsland(id)
+}
+
 func getBlogByID(c echo.Context) error {
 	id := c.FormValue("id")
 	blog, err := db.GetBlogByID(id)
@@ -96,9 +104,9 @@ func getFormValue(c echo.Context, key string) (string, error) {
 func getBlogValue(c echo.Context) (blog *Blog, err error) {
 	name, e1 := getFormValue(c, "name")
 	website, e2 := getFormValue(c, "website")
-	feed, e3 := getFormValue(c, "feed")
+	feed, _ := getFormValue(c, "feed") // 允许没有 feed
 	thold, e4 := getNumber(c, "thold")
-	if err := util.WrapErrors(e1, e2, e3, e4); err != nil {
+	if err := util.WrapErrors(e1, e2, e4); err != nil {
 		return nil, err
 	}
 

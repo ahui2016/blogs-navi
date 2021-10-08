@@ -55,6 +55,10 @@ func (db *DB) InsertBlog(blog *Blog) (err error) {
 	return tx.Commit()
 }
 
+func (db *DB) DeleteIsland(id string) error {
+	return db.Exec(stmt.DeleteBlog, id)
+}
+
 func (db *DB) UpdateBlog(blog *Blog) error {
 	return updateBlog(db.DB, blog)
 }

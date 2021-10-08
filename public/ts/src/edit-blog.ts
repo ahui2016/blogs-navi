@@ -137,3 +137,16 @@ function create_item(comp: mjComponent, name: string, description: string): mjEl
     m('div').addClass('form-text').text(description),
   ]);
 }
+
+(window as any).delete_blog_and_its_post = () => {
+  const body = {
+    id: blogID,
+    pwd: util.val(PwdInput)
+  };
+  util.ajax({method:'POST',url:'/admin/delete-blog',alerts:SubmitAlerts,buttonID:UpdateBtn.id,body:body},
+    () => {
+      Alerts.clear().insert('success', '已删除该博客及与之关联的文章，不可恢复。');
+      Form.elem().hide();
+      EditBtnArea.elem().hide();
+    });
+};

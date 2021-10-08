@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS post
 	blog_id       text    REFERENCES blog(id) ON DELETE CASCADE,
 	url           text    NOT NULL,
 	title         text    NOT NULL,
+	contents      text    NOT NULL,
 	created_at    int     NOT NULL,
   hide          int     NOT NULL
 );
@@ -38,7 +39,7 @@ CREATE TABLE IF NOT EXISTS thumb
 	id            text    PRIMARY KEY COLLATE NOCASE,
 	blog_id       text    REFERENCES blog(id) ON DELETE CASCADE,
 	created_at    int     NOT NULL,
-	url           text    NOT NULL
+	data          blob    NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS metadata
@@ -60,6 +61,8 @@ const InsertBlog = `INSERT INTO blog (
 	id, name, author, website, links, description, feed, feeddate,
 	feedsize, lastupdate, threshold, status, errmsg, category
 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
+
+const DeleteBlog = `DELETE FROM blog WHERE id=?;`
 
 const BlogsWithFeed = `SELECT
 	id, name, author, website, links, description, feed, feeddate,
