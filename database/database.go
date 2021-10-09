@@ -73,11 +73,12 @@ func (db *DB) GetBlogByID(id string) (blog Blog, err error) {
 }
 
 func (db *DB) GetBlogs(category string) (blogs []*Blog, err error) {
-	var query string
+	var rows *sql.Rows
 	if category == "with-feed" {
-		query = stmt.BlogsWithFeed
+		rows, err = db.DB.Query(stmt.BlogsWithFeed)
+	} else {
+		rows, err = db.DB.Query(stmt.GetBlogsByCat, category)
 	}
-	rows, err := db.DB.Query(query)
 	if err != nil {
 		return
 	}
@@ -90,6 +91,22 @@ func (db *DB) GetBlogs(category string) (blogs []*Blog, err error) {
 		blogs = append(blogs, &blog)
 	}
 	return blogs, rows.Err()
+}
+
+func (db *DB) GetCategories() (categories []string, err error) {
+	rows, err := db.DB.Query(stmt.GetCategories)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var cat string
+		if err := rows.Scan(&cat); err != nil {
+			return nil, err
+		}
+		categories = append(categories, cat)
+	}
+	return categories, rows.Err()
 }
 
 func (db *DB) UpdateFeedResult(feedsize int64, errMsg, id string) error {

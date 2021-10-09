@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS blog
 );
 
 CREATE INDEX IF NOT EXISTS idx_blog_lastupdate ON blog(lastupdate);
+CREATE INDEX IF NOT EXISTS idx_blog_category ON blog(category);
 
 CREATE TABLE IF NOT EXISTS post
 (
@@ -64,10 +65,13 @@ const InsertBlog = `INSERT INTO blog (
 
 const DeleteBlog = `DELETE FROM blog WHERE id=?;`
 
-const BlogsWithFeed = `SELECT
-	id, name, author, website, links, description, feed, feeddate,
-	feedsize, lastupdate, threshold, status, errmsg, category
-	FROM blog WHERE feed<>'' ORDER BY lastupdate DESC;`
+const BlogsWithFeed = `
+	SELECT * FROM blog
+	WHERE feed<>'' ORDER BY lastupdate DESC;`
+
+const GetBlogsByCat = `
+	SELECT * FROM blog
+	WHERE category LIKE ? || '%' ORDER BY lastupdate DESC;`
 
 const GetBlogByID = `SELECT
   id, name, author, website, links, description, feed, feeddate,
@@ -81,3 +85,5 @@ const UpdateBlog = `UPDATE blog SET name=?, author=?,
 const UpdateFeedResult = `UPDATE blog
 	SET feeddate=?, feedsize=?, lastupdate=?, status=?, errmsg=?
 	WHERE id=?;`
+
+const GetCategories = `SELECT category from blog group by category;`

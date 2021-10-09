@@ -81,6 +81,14 @@ func getBlogs(c echo.Context) error {
 	return c.JSON(OK, blogs)
 }
 
+func getCats(c echo.Context) error {
+	cats, err := db.GetCategories()
+	if err != nil {
+		return err
+	}
+	return c.JSON(OK, cats)
+}
+
 func updateFeedHandler(c echo.Context) error {
 	feedsize, err := getNumber(c, "feedsize")
 	if err != nil {
@@ -104,10 +112,15 @@ func getFormValue(c echo.Context, key string) (string, error) {
 func getBlogValue(c echo.Context) (blog *Blog, err error) {
 	name, e1 := getFormValue(c, "name")
 	website, e2 := getFormValue(c, "website")
-	feed, _ := getFormValue(c, "feed") // 允许没有 feed
 	thold, e4 := getNumber(c, "thold")
 	if err := util.WrapErrors(e1, e2, e4); err != nil {
 		return nil, err
+	}
+
+	feed, _ := getFormValue(c, "feed")
+	category, _ := getFormValue(c, "category")
+	if feed+category == "" {
+		return nil, fmt.Errorf("当不填写 feed 时就必须填写 category")
 	}
 
 	// 由于用户只有管理员一个人，因此有些输入可以信任前端（不检查空值）。
@@ -120,7 +133,7 @@ func getBlogValue(c echo.Context) (blog *Blog, err error) {
 		Description: c.FormValue("desc"),
 		Feed:        feed,
 		Threshold:   thold,
-		Category:    c.FormValue("category"),
+		Category:    category,
 	}, nil
 }
 
