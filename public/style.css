@@ -55,7 +55,7 @@ label {
 }
 .form-textinput {
   display: block;
-  width: 100%;
+  width: 95%;
   line-height: 1.5;
   padding: .375rem .75rem;
   border: 1px solid;
@@ -104,7 +104,10 @@ label {
   }
   .alert-success {
    color: #0ca678; 
-  }  
+  }
+  .alert-primary {
+    color: black;
+  }
   .btn {
     color: #454545;
     border-color: #71717a;

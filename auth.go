@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-const pwdMaxTry = 2
+const pwdMaxTry = 5
 
 var ipTryCount = make(map[string]int)
 

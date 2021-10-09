@@ -41,6 +41,12 @@ const naviBar = m('div').addClass('text-right').append([
 
 const BlogList = cc('div');
 
+const Footer = cc('div', {classes:'text-center my-5',children:[
+  span('源码: '),
+  m('a').text('https://github.com/ahui2016/blogs-navi')
+      .attr({href:'https://github.com/ahui2016/blogs-navi',target:'_blank'}),
+]});
+
 $('#root').append([
   titleArea,
   naviBar,
@@ -49,6 +55,7 @@ $('#root').append([
   m(Logs),
   m(Alerts),
   m(BlogList).addClass('my-5'),
+  m(Footer).hide(),
 ]);
 
 init();
@@ -60,9 +67,17 @@ function init() {
     resp => {
       blogs = resp as util.Blog[];
       if (!resp || blogs.length == 0) {
-        Alerts.insert('danger', `not found [category: ${CAT}]`);
+        if (CAT == 'with-feed') {
+          Alerts.insert('primary', '请点击 Add 添加有 feed 的博客');
+        } else {
+          Alerts.insert('danger', `not found [category: ${CAT}]`);
+        }
+        return;
       }
       appendToList(BlogList, blogs.map(BlogItem));
+      if (blogs.length > 3) {
+        Footer.elem().show();
+      }
     }, undefined, () => {
       Loading.hide();
     });
