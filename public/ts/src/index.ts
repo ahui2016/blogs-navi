@@ -28,15 +28,15 @@ const CheckForm = cc('form', {classes:'text-right',children:[
 
 const BtnShowCheckForm = cc('a', {text:'Check',attr:{href:'#',title:'批量检测'}});
 const naviBar = m('div').addClass('text-right').append([
-  m('a').text('Add').attr({href:'/public/edit-blog.html',title:'添加博客'}),
-  m(BtnShowCheckForm).addClass('ml-2').on('click', event => {
+  m(BtnShowCheckForm).on('click', event => {
     event.preventDefault();
-    BtnShowCheckForm.elem().fadeOut(1000, () => {
+    BtnShowCheckForm.elem().fadeOut(500, () => {
       CheckForm.elem().show(() => {
         PwdInput.elem().trigger('focus');  
       });
     });
   }),
+  m('a').text('Add').attr({href:'/public/edit-blog.html',title:'添加博客'}).addClass('ml-2'),
 ]);
 
 const BlogList = cc('div');
@@ -59,6 +59,9 @@ function init() {
   util.ajax({method:'POST',url:'/api/get-blogs',alerts:Alerts,body:body},
     resp => {
       blogs = resp as util.Blog[];
+      if (!resp || blogs.length == 0) {
+        Alerts.insert('danger', `not found [category: ${CAT}]`);
+      }
       appendToList(BlogList, blogs.map(BlogItem));
     }, undefined, () => {
       Loading.hide();
@@ -103,6 +106,10 @@ function BlogItem(blog: util.Blog): mjComponent {
 }
 
 async function checkBlogs() {
+  if (!blogs || blogs.length == 0) {
+    Alerts.insert('danger', '本页无博客列表，因此不执行批量检测。');
+    return;
+  }
   try {
     await checkPwd();
     CheckForm.elem().hide();
