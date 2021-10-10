@@ -81,10 +81,10 @@ function init() {
         Form.elem().show();
         SubmitBtn.elem().hide();
         UpdateBtn.elem().show();
-        AddPostBtn.elem().show().attr({
-            href: '/public/add-post.html?id=' + blog.ID,
-            title: '添加文章'
-        });
+        // AddPostBtn.elem().show().attr({
+        //   href:'/public/add-post.html?id='+blog.ID,
+        //   title:'添加文章'
+        // });
         NameInput.elem().val(blog.Name);
         AuthorInput.elem().val(blog.Author);
         WebsiteInput.elem().val(blog.Website);

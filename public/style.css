@@ -35,6 +35,10 @@ label {
 .mb-5 {
   margin-bottom: 3rem;
 }
+.my-3 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
 .my-5 {
   margin-top: 3rem;
   margin-bottom: 3rem;
@@ -74,6 +78,11 @@ label {
 .Loading {
   font-weight: bold;
   animation: blinker 2s linear infinite;
+}
+
+.Hint {
+  border-radius: .5rem;
+  padding: .375rem .75rem;
 }
 
 @keyframes blinker {
@@ -124,5 +133,9 @@ label {
   .badge-grey {
     color: #fefefe;
     background-color: #a1a1aa; 
+  }
+
+  .Hint {
+    background-color: #f4fce3;
   }
 }
