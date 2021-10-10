@@ -94,9 +94,11 @@ func updateFeedHandler(c echo.Context) error {
 	if err != nil {
 		return err
 	}
+	lastupdate, _ := getNumber(c, "lastupdate")
+	etag := c.FormValue("etag")
 	errMsg := c.FormValue("errmsg")
 	id := c.FormValue("id")
-	return db.UpdateFeedResult(feedsize, errMsg, id)
+	return db.UpdateFeedResult(lastupdate, feedsize, etag, errMsg, id)
 }
 
 // getFormValue gets the c.FormValue(key), trims its spaces,

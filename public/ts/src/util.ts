@@ -114,9 +114,10 @@ export interface AjaxOptions {
 
 export function ajax(
   options: AjaxOptions,
-  onSuccess: (resp: any) => void,
+  onSuccess?: (resp: any) => void,
   onFail?: (that: XMLHttpRequest, errMsg: string) => void,
-  onAlways?: (that: XMLHttpRequest) => void
+  onAlways?: (that: XMLHttpRequest) => void,
+  onReady?: (that: XMLHttpRequest) => void
 ): void {
 
   const handleErr = (that: XMLHttpRequest, errMsg: string) => {
@@ -152,9 +153,13 @@ export function ajax(
     handleErr(xhr, 'An error occurred during the transaction');
   };
 
+  xhr.onreadystatechange = function() {
+    onReady?.(this);
+  }
+
   xhr.onload = function() {
     if (this.status == 200) {
-      onSuccess(this.response);
+      onSuccess?.(this.response);
     } else {
       let errMsg = `${this.status}`;
       if (this.responseType == 'text') {
@@ -168,7 +173,7 @@ export function ajax(
 
   xhr.onloadend = function() {
     if (options.buttonID) enable(options.buttonID);
-    if (onAlways) onAlways(this);
+    onAlways?.(this);
   };
 
   if (options.body && !(options.body instanceof FormData)) {

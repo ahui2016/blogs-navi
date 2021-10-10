@@ -109,7 +109,9 @@ func (db *DB) GetCategories() (categories []string, err error) {
 	return categories, rows.Err()
 }
 
-func (db *DB) UpdateFeedResult(feedsize int64, errMsg, id string) error {
+// UpdateFeedResult 根据参数来决定是否更新 Blog.LastUpdate,
+// 按照 lastupdate, etag, feedsize 的顺序来判断是否需要更新 LastUpdate.
+func (db *DB) UpdateFeedResult(lastupdate, feedsize int64, etag, errMsg, id string) error {
 	blog, err := db.GetBlogByID(id)
 	if err != nil {
 		return err
@@ -119,11 +121,6 @@ func (db *DB) UpdateFeedResult(feedsize int64, errMsg, id string) error {
 	blog.FeedDate = util.TimeNow()
 	blog.ErrMsg = strings.TrimSpace(errMsg)
 
-	// 如果数据量太少，很可能是错误
-	if blog.ErrMsg == "" && feedsize < 128 {
-		blog.ErrMsg = "FeedSize is too small"
-	}
-
 	// 出错时
 	if blog.ErrMsg != "" {
 		blog.Status = model.Fail
@@ -132,9 +129,30 @@ func (db *DB) UpdateFeedResult(feedsize int64, errMsg, id string) error {
 
 	// 成功时
 	blog.Status = model.Success
-	if util.Abs(feedsize-blog.FeedSize) > blog.Threshold {
+
+	// 设置 LastUpdate 时，优先以 lastupdate (即 last-modified) 为准。
+	isLastUpdateSet := false
+	if lastupdate > blog.LastUpdate {
+		blog.LastUpdate = lastupdate
+		isLastUpdateSet = true
+	}
+
+	// 如果 etag 有更新，则根据 isLastUpdateSet 来决定是否更新 LastUpdate
+	if etag != "" && etag != blog.FeedEtag {
+		blog.FeedEtag = etag
+		if !isLastUpdateSet {
+			blog.LastUpdate = blog.FeedDate
+			isLastUpdateSet = true
+		}
+	}
+
+	// 最后更新 FeedSize 并根据 isLastUpdateSet 和 diff 来决定是否更新 LastUpdate
+	diff := util.Abs(feedsize - blog.FeedSize)
+	if feedsize > 0 {
 		blog.FeedSize = feedsize
-		blog.LastUpdate = blog.FeedDate
+		if !isLastUpdateSet && diff > blog.Threshold {
+			blog.LastUpdate = blog.FeedDate
+		}
 	}
 	return updateFeedResult(db.DB, blog)
 }

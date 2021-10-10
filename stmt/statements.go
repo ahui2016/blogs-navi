@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS blog
 	links         blob    DEFAULT NULL,
 	description   text    NOT NULL,
 	feed          text    NOT NULL,
+	feedetag      text    NOT NULL,
 	feeddate      int     NOT NULL,
 	feedsize      int     NOT NULL,
 	lastupdate    int     NOT NULL,
@@ -21,8 +22,9 @@ CREATE TABLE IF NOT EXISTS blog
 	category      text    NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS idx_blog_lastupdate ON blog(lastupdate);
+CREATE INDEX IF NOT EXISTS idx_blog_feedetag ON blog(feedetag);
 CREATE INDEX IF NOT EXISTS idx_blog_category ON blog(category);
+CREATE INDEX IF NOT EXISTS idx_blog_lastupdate ON blog(lastupdate);
 
 CREATE TABLE IF NOT EXISTS post
 (
@@ -59,9 +61,9 @@ const GetTextValue = `SELECT text_value FROM metadata WHERE name=?;`
 const UpdateTextValue = `UPDATE metadata SET text_value=? WHERE name=?;`
 
 const InsertBlog = `INSERT INTO blog (
-	id, name, author, website, links, description, feed, feeddate,
-	feedsize, lastupdate, threshold, status, errmsg, category
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
+	id, name, author, website, links, description, feed, feedetag,
+	feeddate, feedsize, lastupdate, threshold, status, errmsg, category
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
 
 const DeleteBlog = `DELETE FROM blog WHERE id=?;`
 
@@ -73,17 +75,14 @@ const GetBlogsByCat = `
 	SELECT * FROM blog
 	WHERE category LIKE ? || '%' ORDER BY lastupdate DESC;`
 
-const GetBlogByID = `SELECT
-  id, name, author, website, links, description, feed, feeddate,
-	feedsize, lastupdate, threshold, status, errmsg, category
-	FROM blog WHERE id=?;`
+const GetBlogByID = `SELECT * FROM blog WHERE id=?;`
 
 const UpdateBlog = `UPDATE blog SET name=?, author=?,
 	website=?, links=?, description=?, feed=?, threshold=?, category=?
 	WHERE id=?;`
 
 const UpdateFeedResult = `UPDATE blog
-	SET feeddate=?, feedsize=?, lastupdate=?, status=?, errmsg=?
+	SET feedetag=?, feeddate=?, feedsize=?, lastupdate=?, status=?, errmsg=?
 	WHERE id=?;`
 
 const GetCategories = `SELECT category from blog group by category;`

@@ -40,6 +40,7 @@ func insertBlog(tx TX, blog *Blog) error {
 		blog.Links,
 		blog.Description,
 		blog.Feed,
+		blog.FeedEtag,
 		blog.FeedDate,
 		blog.FeedSize,
 		blog.LastUpdate,
@@ -76,6 +77,7 @@ func scanBlog(row Row) (blog Blog, err error) {
 		&blog.Links,
 		&blog.Description,
 		&blog.Feed,
+		&blog.FeedEtag,
 		&blog.FeedDate,
 		&blog.FeedSize,
 		&blog.LastUpdate,
@@ -90,6 +92,7 @@ func scanBlog(row Row) (blog Blog, err error) {
 func updateFeedResult(tx TX, blog Blog) error {
 	_, err := tx.Exec(
 		stmt.UpdateFeedResult,
+		blog.FeedEtag,
 		blog.FeedDate,
 		blog.FeedSize,
 		blog.LastUpdate,

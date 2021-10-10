@@ -67,7 +67,7 @@ export function CreateAlerts(max) {
     };
     return alerts;
 }
-export function ajax(options, onSuccess, onFail, onAlways) {
+export function ajax(options, onSuccess, onFail, onAlways, onReady) {
     const handleErr = (that, errMsg) => {
         if (onFail) {
             onFail(that, errMsg);
@@ -97,10 +97,13 @@ export function ajax(options, onSuccess, onFail, onAlways) {
     xhr.onerror = () => {
         handleErr(xhr, 'An error occurred during the transaction');
     };
+    xhr.onreadystatechange = function () {
+        onReady === null || onReady === void 0 ? void 0 : onReady(this);
+    };
     xhr.onload = function () {
         var _a;
         if (this.status == 200) {
-            onSuccess(this.response);
+            onSuccess === null || onSuccess === void 0 ? void 0 : onSuccess(this.response);
         }
         else {
             let errMsg = `${this.status}`;
@@ -116,8 +119,7 @@ export function ajax(options, onSuccess, onFail, onAlways) {
     xhr.onloadend = function () {
         if (options.buttonID)
             enable(options.buttonID);
-        if (onAlways)
-            onAlways(this);
+        onAlways === null || onAlways === void 0 ? void 0 : onAlways(this);
     };
     if (options.body && !(options.body instanceof FormData)) {
         const body = new FormData();
