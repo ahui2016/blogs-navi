@@ -101,6 +101,10 @@ func updateFeedHandler(c echo.Context) error {
 	return db.UpdateFeedResult(lastupdate, feedsize, etag, errMsg, id)
 }
 
+func downloadDB(c echo.Context) error {
+	return c.File(dbFileName)
+}
+
 // getFormValue gets the c.FormValue(key), trims its spaces,
 // and checks if it is empty or not.
 func getFormValue(c echo.Context, key string) (string, error) {

@@ -24,6 +24,7 @@ func main() {
 	admin.POST("/update-blog", updateBlogHandler)
 	admin.POST("/update-feed", updateFeedHandler)
 	admin.POST("/delete-blog", deleteBlogHandler)
+	admin.POST("/download-db", downloadDB)
 
 	e.Logger.Fatal(e.Start(*addr))
 }

@@ -36,6 +36,7 @@ const CheckForm = cc('form', { classes: 'text-right', children: [
             checkBlogs();
         }),
     ] });
+const DownloadDB = cc('a', { text: 'blogs-navi.db', attr: { download: 'blogs-navi.db' } });
 const BtnShowCheckForm = cc('a', { text: 'Check', attr: { href: '#', title: '批量检测' } });
 const naviBar = m('div').addClass('text-right').append([
     m(BtnShowCheckForm).on('click', event => {
@@ -63,6 +64,7 @@ $('#root').append([
     titleArea,
     naviBar,
     m(CheckForm).hide(),
+    m(DownloadDB).hide(),
     m(Hint).addClass('my-3').hide(),
     m(Loading).addClass('my-5'),
     m(Logs),
@@ -151,35 +153,20 @@ async function checkBlogs() {
             Logs.insert('info', '没有 feed, 不检查。');
             continue;
         }
-        // if (dayjs().unix() - blog.FeedDate < 24*Hour) {
-        //   Logs.insert('info', '距离上次检查时间未超过 24 小时，忽略本次检查。');
-        //   continue;
-        // }
+        if (dayjs().unix() - blog.FeedDate < 24 * Hour) {
+            Logs.insert('info', '距离上次检查时间未超过 24 小时，忽略本次检查。');
+            continue;
+        }
         let headers = { last_modified: 0, etag: '', content_length: '0' };
         let errmsg = '';
-        // 先尝试获取 header
         try {
             headers = await getHeaders(blog.Feed);
             Logs.insert('success', `Got header: 1:${headers.last_modified}, 2:${headers.etag}, 3:${headers.content_length}`);
         }
         catch (err) {
-            Logs.insert('danger', `${err}`);
             errmsg = `${err}`;
+            Logs.insert('danger', errmsg);
         }
-        // 不管 getHeader 出错还是成功, header 都有可能未获得必要的信息
-        // 对于这种情况则再尝试获取 feedsize
-        if (headers.last_modified == 0 && headers.etag == '' && headers.content_length == '0') {
-            try {
-                const feedsize = await getFeedSize(blog.Feed);
-                headers.content_length = feedsize.toString();
-                Logs.insert('success', `Got ${feedsize} from ${blog.Feed}`);
-            }
-            catch (err) {
-                Logs.insert('danger', `${err}`);
-                errmsg = `${err} | ${errmsg}`;
-            }
-        }
-        // 最后把数据保存到后端
         try {
             await updateFeed(headers, errmsg, blog.ID);
         }
@@ -223,12 +210,6 @@ function getHeaders(feed) {
         });
     });
 }
-function getFeedSize(feed) {
-    return new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => { reject('timeout'); }, 10 * 1000);
-        util.ajax({ method: 'GET', url: feed, responseType: 'blob' }, (resp) => { resolve(resp.size); }, (_, errMsg) => { reject(errMsg); }, () => { clearTimeout(timeout); });
-    });
-}
 function updateFeed(header, errmsg, id) {
     return new Promise((resolve, reject) => {
         const timeout = setTimeout(() => { reject('timeout'); }, 10 * 1000);
@@ -251,5 +232,12 @@ window.get_categories = () => {
             return;
         }
         console.log(cats.join('\n'));
+    });
+};
+window.download_db = () => {
+    const body = { pwd: util.val(PwdInput) };
+    util.ajax({ method: 'POST', url: '/admin/download-db', responseType: 'blob', alerts: Alerts, body: body }, (resp) => {
+        const blob = resp;
+        DownloadDB.elem().show().attr('href', URL.createObjectURL(blob));
     });
 };

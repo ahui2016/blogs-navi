@@ -44,6 +44,8 @@ const CheckForm = cc('form', {classes:'text-right',children:[
   }),
 ]});
 
+const DownloadDB = cc('a', {text:'blogs-navi.db',attr:{download:'blogs-navi.db'}});
+
 const BtnShowCheckForm = cc('a', {text:'Check',attr:{href:'#',title:'批量检测'}});
 const naviBar = m('div').addClass('text-right').append([
   m(BtnShowCheckForm).on('click', event => {
@@ -74,6 +76,7 @@ $('#root').append([
   titleArea,
   naviBar,
   m(CheckForm).hide(),
+  m(DownloadDB).hide(),
   m(Hint).addClass('my-3').hide(),
   m(Loading).addClass('my-5'),
   m(Logs),
@@ -265,3 +268,12 @@ function updateFeed(header:Headers, errmsg: string, id: string): Promise<void> {
     console.log(cats.join('\n'));
   });
 };
+
+(window as any).download_db = () => {
+  const body = {pwd: util.val(PwdInput)};
+  util.ajax({method:'POST',url:'/admin/download-db',responseType:'blob',alerts:Alerts,body:body},
+    (resp) => {
+      const blob = resp as Blob;
+      DownloadDB.elem().show().attr('href', URL.createObjectURL(blob));
+    });
+}
