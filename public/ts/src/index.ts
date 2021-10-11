@@ -144,7 +144,7 @@ function BlogItem(blog: util.Blog): mjComponent {
   return self;
 }
 
-interface Header {
+interface Headers {
   last_modified: number;
   etag: string;
   content_length: string;
@@ -171,39 +171,24 @@ async function checkBlogs() {
       Logs.insert('info', '没有 feed, 不检查。')
       continue;
     }
-    // if (dayjs().unix() - blog.FeedDate < 24*Hour) {
-    //   Logs.insert('info', '距离上次检查时间未超过 24 小时，忽略本次检查。');
-    //   continue;
-    // }
+    if (dayjs().unix() - blog.FeedDate < 24*Hour) {
+      Logs.insert('info', '距离上次检查时间未超过 24 小时，忽略本次检查。');
+      continue;
+    }
 
-    let header:Header = {last_modified:0,etag:'',content_length:'0'};
+    let headers:Headers = {last_modified:0,etag:'',content_length:'0'};
     let errmsg = '';
 
-    // 先尝试获取 header
     try {
-      header = await getHeader(blog.Feed);
-      Logs.insert('success', `Got header: 1:${header.last_modified}, 2:${header.etag}, 3:${header.content_length}`);
+      headers = await getHeaders(blog.Feed);
+      Logs.insert('success', `Got header: 1:${headers.last_modified}, 2:${headers.etag}, 3:${headers.content_length}`);
     } catch (err) {
-      Logs.insert('danger', `${err}`);
       errmsg = `${err}`;
+      Logs.insert('danger', errmsg);
     }
 
-    // 不管 getHeader 出错还是成功, header 都有可能未获得必要的信息
-    // 对于这种情况则再尝试获取 feedsize
-    if (header.last_modified==0 && header.etag=='' && header.content_length=='0') {
-      try {
-        const feedsize = await getFeedSize(blog.Feed);
-        header.content_length = feedsize.toString();
-        Logs.insert('success', `Got ${feedsize} from ${blog.Feed}`);
-      } catch (err) {
-        Logs.insert('danger', `${err}`);
-        errmsg = `${err} | ${errmsg}`;
-      }
-    }
-
-    // 最后把数据保存到后端
     try {
-      await updateFeed(header, errmsg, blog.ID);
+      await updateFeed(headers, errmsg, blog.ID);
     } catch (err) {
       Logs.insert('danger', `${err}`);
     }
@@ -219,41 +204,40 @@ function checkPwd(): Promise<void> {
   });
 }
 
-function getHeader(feed: string): Promise<Header> {
+function getHeaders(feed: string): Promise<Headers> {
   return new Promise((resolve, reject) => {
     const timeout = setTimeout(() => { reject('timeout'); }, 10*1000);
     util.ajax({method:'GET',url:feed,responseType:'blob'},
-      undefined,
+      resp => {
+        const feedsize = (resp as Blob).size;
+        resolve({
+          last_modified: 0,
+          etag: '',
+          content_length: feedsize.toString()
+        });
+      },
       (_, errMsg) => { reject(errMsg); },
       () => { clearTimeout(timeout); },
       that => {
         if (that.readyState == that.HEADERS_RECEIVED) {
           const lastModified = that.getResponseHeader('last-modified');
-          const lastupdate = !lastModified ? 0 : dayjs(lastModified).unix()
-          const etag = that.getResponseHeader('etag');
-          const contentLength = that.getResponseHeader('content-length');
-          that.abort();
-          resolve({
-            last_modified: lastupdate,
-            etag: etag ?? '',
-            content_length: contentLength ?? '0'
-          })
+          const lastupdate = !lastModified ? 0 : dayjs(lastModified).unix();
+          const etag = that.getResponseHeader('etag') ?? '';
+          const contentLength = that.getResponseHeader('content-length') ?? '0';
+          if (lastupdate > 0 || etag != '' || contentLength != '0') {
+            that.abort();
+            resolve({
+              last_modified: lastupdate,
+              etag: etag,
+              content_length: contentLength
+            });
+          }
         }
       });
   });
 }
 
-function getFeedSize(feed: string): Promise<number> {
-  return new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => { reject('timeout'); }, 10*1000);
-    util.ajax({method:'GET',url:feed,responseType:'blob'},
-      (resp) => { resolve((resp as Blob).size); },
-      (_, errMsg) => { reject(errMsg); },
-      () => { clearTimeout(timeout); });
-  });
-}
-
-function updateFeed(header:Header, errmsg: string, id: string): Promise<void> {
+function updateFeed(header:Headers, errmsg: string, id: string): Promise<void> {
   return new Promise((resolve, reject) => {
     const timeout = setTimeout(() => { reject('timeout'); }, 10*1000);
     const body = {

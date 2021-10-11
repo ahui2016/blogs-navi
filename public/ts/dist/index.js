@@ -155,12 +155,12 @@ async function checkBlogs() {
         //   Logs.insert('info', '距离上次检查时间未超过 24 小时，忽略本次检查。');
         //   continue;
         // }
-        let header = { last_modified: 0, etag: '', content_length: '0' };
+        let headers = { last_modified: 0, etag: '', content_length: '0' };
         let errmsg = '';
         // 先尝试获取 header
         try {
-            header = await getHeader(blog.Feed);
-            Logs.insert('success', `Got header: 1:${header.last_modified}, 2:${header.etag}, 3:${header.content_length}`);
+            headers = await getHeaders(blog.Feed);
+            Logs.insert('success', `Got header: 1:${headers.last_modified}, 2:${headers.etag}, 3:${headers.content_length}`);
         }
         catch (err) {
             Logs.insert('danger', `${err}`);
@@ -168,10 +168,10 @@ async function checkBlogs() {
         }
         // 不管 getHeader 出错还是成功, header 都有可能未获得必要的信息
         // 对于这种情况则再尝试获取 feedsize
-        if (header.last_modified == 0 && header.etag == '' && header.content_length == '0') {
+        if (headers.last_modified == 0 && headers.etag == '' && headers.content_length == '0') {
             try {
                 const feedsize = await getFeedSize(blog.Feed);
-                header.content_length = feedsize.toString();
+                headers.content_length = feedsize.toString();
                 Logs.insert('success', `Got ${feedsize} from ${blog.Feed}`);
             }
             catch (err) {
@@ -181,7 +181,7 @@ async function checkBlogs() {
         }
         // 最后把数据保存到后端
         try {
-            await updateFeed(header, errmsg, blog.ID);
+            await updateFeed(headers, errmsg, blog.ID);
         }
         catch (err) {
             Logs.insert('danger', `${err}`);
@@ -194,21 +194,31 @@ function checkPwd() {
         util.ajax({ method: 'POST', url: '/admin/check-only', body: { pwd: util.val(PwdInput) } }, () => { resolve(); }, (_, errMsg) => { reject(errMsg); });
     });
 }
-function getHeader(feed) {
+function getHeaders(feed) {
     return new Promise((resolve, reject) => {
         const timeout = setTimeout(() => { reject('timeout'); }, 10 * 1000);
-        util.ajax({ method: 'GET', url: feed, responseType: 'blob' }, undefined, (_, errMsg) => { reject(errMsg); }, () => { clearTimeout(timeout); }, that => {
+        util.ajax({ method: 'GET', url: feed, responseType: 'blob' }, resp => {
+            const feedsize = resp.size;
+            resolve({
+                last_modified: 0,
+                etag: '',
+                content_length: feedsize.toString()
+            });
+        }, (_, errMsg) => { reject(errMsg); }, () => { clearTimeout(timeout); }, that => {
+            var _a, _b;
             if (that.readyState == that.HEADERS_RECEIVED) {
                 const lastModified = that.getResponseHeader('last-modified');
                 const lastupdate = !lastModified ? 0 : dayjs(lastModified).unix();
-                const etag = that.getResponseHeader('etag');
-                const contentLength = that.getResponseHeader('content-length');
-                that.abort();
-                resolve({
-                    last_modified: lastupdate,
-                    etag: etag !== null && etag !== void 0 ? etag : '',
-                    content_length: contentLength !== null && contentLength !== void 0 ? contentLength : '0'
-                });
+                const etag = (_a = that.getResponseHeader('etag')) !== null && _a !== void 0 ? _a : '';
+                const contentLength = (_b = that.getResponseHeader('content-length')) !== null && _b !== void 0 ? _b : '0';
+                if (lastupdate > 0 || etag != '' || contentLength != '0') {
+                    that.abort();
+                    resolve({
+                        last_modified: lastupdate,
+                        etag: etag,
+                        content_length: contentLength
+                    });
+                }
             }
         });
     });
