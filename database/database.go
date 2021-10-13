@@ -77,7 +77,7 @@ func (db *DB) GetBlogs(category string) (blogs []*Blog, err error) {
 	if category == "with-feed" {
 		rows, err = db.DB.Query(stmt.BlogsWithFeed)
 	} else {
-		rows, err = db.DB.Query(stmt.GetBlogsByCat, category)
+		rows, err = db.DB.Query(stmt.GetBlogsByCat, "%"+category+"%")
 	}
 	if err != nil {
 		return

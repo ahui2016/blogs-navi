@@ -23,6 +23,10 @@ label {
   margin-bottom: 1.5rem;
 }
 
+.BlogName a {
+  font-size: larger;
+}
+
 .ml-1 {
   margin-left: 0.25rem;
 }
@@ -53,8 +57,6 @@ label {
   resize: vertical;
 }
 .btn {
-  border: 1px solid;
-  border-radius: .25rem;
   padding: .375rem .75rem;
 }
 .form-textinput {
@@ -92,16 +94,111 @@ label {
 }
 
 @media (prefers-color-scheme: light) {
+  :root {
+    --background-color: #3f3f46;
+    --default-color: #a1a1aa;
+    --primary-color: #e4e4e7;
+    --grey: #71717a;
+  }
   body {
-    color: #454545;
-    background-color: #fefefe;
+    color: var(--default-color);
+    background-color: var(--background-color);
   }
 
-  a:link {
-    color:#1864ab;
+  .text-default {
+    color: var(--default-color);
   }
 
-  a:visited {
+  .text-grey,
+  .form-text {
+    color: var(--grey);
+  }
+
+  .badge-grey {
+    color: var(--background-color);
+    background-color: var(--grey); 
+  }
+  
+  .BlogIDArea a {
+    color: var(--grey);
+  }
+  .BlogName a {
+    font-weight: bold;
+    color: var(--default-color);
+  }
+
+  a {
+    color:#15aabf;
+  }
+
+  .alert-danger {
+    color: #f783ac;
+  }
+  .alert-success {
+   color: #0ca678; 
+  }
+  .alert-primary {
+    color: var(--primary-color);
+  }
+
+  .btn {
+    border: 1px solid;
+    border-radius: .25rem;
+    background-color: #454545;
+    color: #d4d4d8;
+    border-color: var(--default-color);
+  }
+  .btn:hover {
+    background-color: #3f3f46;;
+    color: var(--primary-color);
+  }
+
+  .form-textinput {
+    color: var(--primary-color);
+    border-color: var(--default-color);
+    background-color: #3f3f46;
+  }
+
+  .Hint {
+    background-color: #454545;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: #fefefe;
+    --border-color: #71717a;
+    --default-color: #454545;
+    --grey: #a1a1aa;
+  }
+  body {
+    color: var(--default-color);
+    background-color: var(--background-color);
+  }
+
+  .text-default {
+    color: var(--default-color);
+  }
+
+  .text-grey,
+  .form-text {
+    color: var(--grey);
+  }
+
+  .badge-grey {
+    color: var(--background-color);
+    background-color: var(--grey); 
+  }
+  
+  .BlogIDArea a {
+    color: var(--grey);
+  }
+  .BlogName a {
+    font-weight: bold;
+    color: var(--default-color);
+  }
+
+  a {
     color:#1864ab;
   }
 
@@ -118,24 +215,14 @@ label {
     color: black;
   }
   .btn {
-    color: #454545;
-    border-color: #71717a;
+    color: var(--default-color);
   }
   .form-textinput {
-    border-color: #71717a;
-  }
-
-  .text-grey,
-  .form-text {
-    color: #a1a1aa;
-  }
-
-  .badge-grey {
-    color: #fefefe;
-    background-color: #a1a1aa; 
+    border-color: var(--border-color);
   }
 
   .Hint {
     background-color: #f4fce3;
   }
 }
+

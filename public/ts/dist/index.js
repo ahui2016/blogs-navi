@@ -19,12 +19,17 @@ const Hint = cc('div', { classes: 'Hint', children: [
         m('ul').append([
             m('li').text('本页默认展示有 feed (比如 RSS feed) 的博客列表'),
             m('li').append([
-                span('可手动在网页地址后加参数展示没有 feed 的博客，比如 '),
-                m('a').text('/?cat=self').attr({ href: '/?cat=self' }),
-                span(', 该参数表示 "展示类别(category)前缀为self的博客"'),
+                span('可手动在网页地址后加参数, 比如 '),
+                m('a').text('/?cat=博客联盟').attr({ href: '/?cat=博客联盟' }),
+                span(', 展示类别(category)包含字符串 "博客联盟" 的博客'),
             ]),
             m('li').text('按 F12 进入控制台输入命令 get_categories() 可查看现有哪些类别'),
             m('li').text('在 Add(添加博客) 页面可随意添加类别'),
+        ]),
+        m('hr'),
+        m('ul').append([
+            m('li').text('特别推荐阅读每个博客的 "about" 或 "关于" 页面, 都非常有趣.'),
+            m('li').text('如果你的博客更换了域名, 可发邮件至 102419@gmail.com 通知我, 或到 V2EX 发一篇标题包含 "博客" 的贴子(我会定期搜索).'),
         ]),
     ] });
 const PwdInput = cc('input', { attr: { type: 'password', placeholder: 'password' } });
@@ -90,7 +95,7 @@ function init() {
             return;
         }
         appendToList(BlogList, blogs.map(BlogItem));
-        if (blogs.length > 3) {
+        if (blogs.length > 5) {
             Footer.elem().show();
         }
     }, undefined, () => {
@@ -102,30 +107,31 @@ function BlogItem(blog) {
         blog.Status = 'not yet';
     const updatedAt = dayjs.unix(blog.LastUpdate).format('YYYY-MM-DD');
     const checkedAt = dayjs.unix(blog.FeedDate).format('YYYY-MM-DD');
-    const self = cc('div', { id: blog.ID, classes: 'BlogItem', children: [
-            m('div').append([
+    const self = cc('div', { id: blog.ID, classes: 'BlogItem text-grey', children: [
+            m('div').addClass('BlogIDArea').append([
                 span('[id:'),
                 m('a').text(blog.ID).attr({ 'href': '/public/edit-blog.html?id=' + blog.ID, title: '详细资料' }),
-                span(']').addClass('BlogCat'),
+                span(']'),
+                m('a').addClass('BlogCat ml-1'),
                 span(blog.Status).addClass('badge-grey ml-2').attr('title', '上次检测结果'),
             ]),
             m('div').addClass('BlogName').append([
                 m('a').text(blog.Name).attr({ href: blog.Website, target: '_blank' }),
             ]),
-            m('div').text(blog.Description).addClass('text-grey'),
+            m('div').text(blog.Description),
             m('div').addClass('ErrMsg').hide(),
         ] });
     self.init = () => {
         if (blog.Author) {
-            self.elem().find('.BlogName').append(span(' by ' + blog.Author));
+            self.elem().find('.BlogName').append(span(' by ' + blog.Author).addClass('text-default'));
         }
         if (blog.Category) {
-            self.elem().find('.BlogCat').text(`, cat:${blog.Category}]`);
+            self.elem().find('.BlogCat').text(blog.Category).attr({ href: '/?cat=' + blog.Category });
         }
         if (blog.Status != 'not yet') {
-            self.elem().append([
+            self.elem().append(m('div').append([
                 span(' checked at: ' + checkedAt), span(' updated at: ' + updatedAt),
-            ]);
+            ]));
         }
         if (blog.ErrMsg) {
             self.elem().find('.ErrMsg').show().text(`error: ${blog.ErrMsg}`);

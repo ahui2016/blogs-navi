@@ -73,7 +73,7 @@ const BlogsWithFeed = `
 
 const GetBlogsByCat = `
 	SELECT * FROM blog
-	WHERE category LIKE ? || '%' ORDER BY lastupdate DESC;`
+	WHERE category LIKE ? ORDER BY lastupdate DESC;`
 
 const GetBlogByID = `SELECT * FROM blog WHERE id=?;`
 

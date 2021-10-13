@@ -18,12 +18,13 @@ const WebsiteInput = create_input();
 const FeedInput = create_input();
 const THoldInput = cc('input', {attr:{type:'number'}});
 const DescInput = create_textarea();
-const LinksInput = create_textarea(3);
+const LinksInput = create_textarea();
 const CatInput = create_input();
 const PwdInput = create_input('password');
 
 const SubmitAlerts = util.CreateAlerts();
-const SubmitBtn = cc('button', {text:'Submit',classes:'btn'});
+const SubmitBtn = cc('button', {id:'submit',text:'submit'});
+const AddBtn = cc('button', {text:'Add',classes:'btn'});
 const UpdateBtn = cc('button', {text:'Update',classes:'btn'});
 const AddPostBtn = cc('a', {text:'AddPost',classes:'ml-2'});
 
@@ -40,10 +41,14 @@ const Form = cc('form', {attr:{'autocomplete':'off'}, children: [
 
   m(SubmitAlerts),
   m('div').addClass('text-center my-5').append([
-    m(SubmitBtn).on('click', (event) => {
+    m(SubmitBtn).hide().on('click', e => {
+      e.preventDefault();
+      return false; // 这个按钮是隐藏不用的，为了防止按回车键提交表单。
+    }),
+    m(AddBtn).on('click', (event) => {
       event.preventDefault();
       const body = newBlogForm();
-      util.ajax({method:'POST',url:'/admin/add-blog',alerts:SubmitAlerts,buttonID:SubmitBtn.id,body:body},
+      util.ajax({method:'POST',url:'/admin/add-blog',alerts:SubmitAlerts,buttonID:AddBtn.id,body:body},
         (resp) => {
           blogID = resp.message;
           Alerts.insert('success', '点击下面的 Edit 按钮可编辑博客资料');
@@ -96,7 +101,7 @@ function init() {
     (resp) => {
       const blog = resp as util.Blog;
       Form.elem().show();
-      SubmitBtn.elem().hide();
+      AddBtn.elem().hide();
       UpdateBtn.elem().show();
       // AddPostBtn.elem().show().attr({
       //   href:'/public/add-post.html?id='+blog.ID,
@@ -135,7 +140,7 @@ function newBlogForm() {
   };
 }
 
-function create_textarea(rows: number=2): mjComponent {
+function create_textarea(rows: number=3): mjComponent {
   return cc('textarea', {classes:'form-textarea', attr:{'rows': rows}});
 }
 function create_input(type:string='text'): mjComponent {

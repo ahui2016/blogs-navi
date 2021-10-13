@@ -128,6 +128,9 @@ func getBlogValue(c echo.Context) (blog *Blog, err error) {
 	if feed+category == "" {
 		return nil, fmt.Errorf("当不填写 feed 时就必须填写 category")
 	}
+	if category == "with-feed" {
+		return nil, fmt.Errorf("with-feed 是系统保留类别")
+	}
 
 	// 由于用户只有管理员一个人，因此有些输入可以信任前端（不检查空值）。
 	return &Blog{

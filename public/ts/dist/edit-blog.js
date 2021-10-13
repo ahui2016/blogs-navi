@@ -13,11 +13,12 @@ const WebsiteInput = create_input();
 const FeedInput = create_input();
 const THoldInput = cc('input', { attr: { type: 'number' } });
 const DescInput = create_textarea();
-const LinksInput = create_textarea(3);
+const LinksInput = create_textarea();
 const CatInput = create_input();
 const PwdInput = create_input('password');
 const SubmitAlerts = util.CreateAlerts();
-const SubmitBtn = cc('button', { text: 'Submit', classes: 'btn' });
+const SubmitBtn = cc('button', { id: 'submit', text: 'submit' });
+const AddBtn = cc('button', { text: 'Add', classes: 'btn' });
 const UpdateBtn = cc('button', { text: 'Update', classes: 'btn' });
 const AddPostBtn = cc('a', { text: 'AddPost', classes: 'ml-2' });
 const Form = cc('form', { attr: { 'autocomplete': 'off' }, children: [
@@ -32,10 +33,14 @@ const Form = cc('form', { attr: { 'autocomplete': 'off' }, children: [
         create_item(PwdInput, 'Password', '必须输入正确的管理员密码才能提交表单'),
         m(SubmitAlerts),
         m('div').addClass('text-center my-5').append([
-            m(SubmitBtn).on('click', (event) => {
+            m(SubmitBtn).hide().on('click', e => {
+                e.preventDefault();
+                return false;
+            }),
+            m(AddBtn).on('click', (event) => {
                 event.preventDefault();
                 const body = newBlogForm();
-                util.ajax({ method: 'POST', url: '/admin/add-blog', alerts: SubmitAlerts, buttonID: SubmitBtn.id, body: body }, (resp) => {
+                util.ajax({ method: 'POST', url: '/admin/add-blog', alerts: SubmitAlerts, buttonID: AddBtn.id, body: body }, (resp) => {
                     blogID = resp.message;
                     Alerts.insert('success', '点击下面的 Edit 按钮可编辑博客资料');
                     Alerts.insert('success', '成功添加博客');
@@ -79,7 +84,7 @@ function init() {
     util.ajax({ method: 'POST', url: '/api/get-blog', alerts: Alerts, body: { id: blogID } }, (resp) => {
         const blog = resp;
         Form.elem().show();
-        SubmitBtn.elem().hide();
+        AddBtn.elem().hide();
         UpdateBtn.elem().show();
         // AddPostBtn.elem().show().attr({
         //   href:'/public/add-post.html?id='+blog.ID,
@@ -114,7 +119,7 @@ function newBlogForm() {
         category: util.val(CatInput).trim(),
     };
 }
-function create_textarea(rows = 2) {
+function create_textarea(rows = 3) {
     return cc('textarea', { classes: 'form-textarea', attr: { 'rows': rows } });
 }
 function create_input(type = 'text') {
