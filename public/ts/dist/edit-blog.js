@@ -128,7 +128,7 @@ function create_input(type = 'text') {
 function create_item(comp, name, description) {
     return m('div').addClass('mb-3').append([
         m('label').attr({ for: comp.raw_id }).text(name),
-        m(comp).addClass('form-textinput-fat'),
+        m(comp).addClass('form-textinput form-textinput-fat'),
         m('div').addClass('form-text').text(description),
     ]);
 }
