@@ -14,10 +14,15 @@ type (
 )
 
 const (
-	OK           = http.StatusOK
-	dbFileName   = "db-blogs-navi.sqlite"
-	pwdFileName  = "pwd.txt"
-	defaultTHold = 0
+	OK                 = http.StatusOK
+	dbFileName         = "db-blogs-navi.sqlite"
+	pwdFileName        = "pwd.txt"
+	defaultTHold       = 0
+	catLengthLimit     = 30                  // 类型长度限 制
+	nameAndAuthorLimit = 90                  // 博客名称+作者名称的长度限制
+	linkLengthLimit    = 256                 // 网址长度限制
+	linksLimit         = linkLengthLimit * 5 // links 总长度限制
+	descLengthLimit    = 512                 // 博客简介长度限制
 )
 
 var (

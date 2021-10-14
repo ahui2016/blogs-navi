@@ -132,14 +132,39 @@ func getBlogValue(c echo.Context) (blog *Blog, err error) {
 		return nil, fmt.Errorf("with-feed 是系统保留类别")
 	}
 
+	author := c.FormValue("author")
+	links := c.FormValue("links")
+	desc := c.FormValue("desc")
+
+	if *demo {
+		if len(name+author) > nameAndAuthorLimit {
+			return nil, fmt.Errorf("name+author is too long (bigger than %d)", nameAndAuthorLimit)
+		}
+		if len(website) > linkLengthLimit {
+			return nil, fmt.Errorf("website is too long (bigger than %d)", linkLengthLimit)
+		}
+		if len(feed) > linkLengthLimit {
+			return nil, fmt.Errorf("the feed is too long (bigger than %d)", linkLengthLimit)
+		}
+		if len(links) > linksLimit {
+			return nil, fmt.Errorf("links is too long (bigger than %d)", linksLimit)
+		}
+		if len(category) > catLengthLimit {
+			return nil, fmt.Errorf("category is too long (bigger than %d)", catLengthLimit)
+		}
+		if len(desc) > descLengthLimit {
+			return nil, fmt.Errorf("description is too long (bigger than %d)", descLengthLimit)
+		}
+	}
+
 	// 由于用户只有管理员一个人，因此有些输入可以信任前端（不检查空值）。
 	return &Blog{
 		ID:          c.FormValue("id"),
 		Name:        name,
-		Author:      c.FormValue("author"),
+		Author:      author,
 		Website:     website,
-		Links:       c.FormValue("links"),
-		Description: c.FormValue("desc"),
+		Links:       links,
+		Description: desc,
 		Feed:        feed,
 		Threshold:   thold,
 		Category:    category,

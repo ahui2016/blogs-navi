@@ -36,7 +36,7 @@ const Form = cc('form', {attr:{'autocomplete':'off'}, children: [
   create_item(THoldInput, 'Threshold', '用于判断有无更新的阈值 (单位:byte), 留空或填写 0 将采用默认值'),
   create_item(DescInput, 'Description', '博客/网站的简介、备注'),
   create_item(LinksInput, 'Links', '相关网址 (比如作者的 twitter), 请以 http 开头，每行一个网址'),
-  create_item(CatInput, 'Category', '类别，自由填写任意字符串 (筛选类别时按前缀筛选)'),
+  create_item(CatInput, 'Category', '类别，自由填写任意字符串'),
   create_item(PwdInput, 'Password', '必须输入正确的管理员密码才能提交表单'),
 
   m(SubmitAlerts),
@@ -69,7 +69,7 @@ const Form = cc('form', {attr:{'autocomplete':'off'}, children: [
   ]),
 ]});
 
-const EditBtn = cc('button', {text:'Edit',classes:'btn'});
+const EditBtn = cc('button', {text:'Edit',classes:'btn btn-fat'});
 const EditBtnArea = cc('div', {classes:'text-center my-5',children:[
   m(EditBtn).on('click', () => {
     location.href = '/public/edit-blog.html?id='+blogID;
