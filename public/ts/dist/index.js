@@ -12,7 +12,7 @@ const titleArea = m('div').addClass('text-center').append([
 ]);
 const HintBtn = cc('a', { text: 'Hint', attr: { href: '#', title: '显示说明' } });
 const Hint = cc('div', { classes: 'Hint', children: [
-        m('button').text('hide').on('click', () => {
+        m('button').text('hide').addClass('btn').on('click', () => {
             Hint.elem().hide();
             HintBtn.elem().css('visibility', 'visible');
         }),
@@ -32,11 +32,11 @@ const Hint = cc('div', { classes: 'Hint', children: [
             m('li').text('如果你的博客更换了域名, 可发邮件至 102419@gmail.com 通知我, 或到 V2EX 发一篇标题包含 "博客" 的贴子(我会定期搜索).'),
         ]),
     ] });
-const PwdInput = cc('input', { attr: { type: 'password', placeholder: 'password' } });
+const PwdInput = cc('input', { classes: 'form-textinput', attr: { type: 'password', placeholder: 'password' } });
 const CheckBtn = cc('button', { text: 'check' });
 const CheckForm = cc('form', { classes: 'text-right', children: [
         m(PwdInput),
-        m(CheckBtn).on('click', event => {
+        m(CheckBtn).addClass('btn ml-1').on('click', event => {
             event.preventDefault();
             checkBlogs();
         }),
@@ -71,10 +71,10 @@ $('#root').append([
     naviBar,
     m(CheckForm).hide(),
     m(DownloadDB).hide(), m(RevokeBtn).hide(),
-    m(Hint).addClass('my-3').hide(),
     m(Loading).addClass('my-5'),
     m(Logs),
     m(Alerts).addClass('my-3'),
+    m(Hint).addClass('my-3').hide(),
     m(BlogList).addClass('my-5'),
     m(Footer).hide(),
 ]);

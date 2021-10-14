@@ -18,8 +18,8 @@ const CatInput = create_input();
 const PwdInput = create_input('password');
 const SubmitAlerts = util.CreateAlerts();
 const SubmitBtn = cc('button', { id: 'submit', text: 'submit' });
-const AddBtn = cc('button', { text: 'Add', classes: 'btn' });
-const UpdateBtn = cc('button', { text: 'Update', classes: 'btn' });
+const AddBtn = cc('button', { text: 'Add', classes: 'btn btn-fat' });
+const UpdateBtn = cc('button', { text: 'Update', classes: 'btn btn-fat' });
 const AddPostBtn = cc('a', { text: 'AddPost', classes: 'ml-2' });
 const Form = cc('form', { attr: { 'autocomplete': 'off' }, children: [
         create_item(NameInput, 'Name', '博客或网站名称'),
@@ -35,7 +35,7 @@ const Form = cc('form', { attr: { 'autocomplete': 'off' }, children: [
         m('div').addClass('text-center my-5').append([
             m(SubmitBtn).hide().on('click', e => {
                 e.preventDefault();
-                return false;
+                return false; // 这个按钮是隐藏不用的，为了防止按回车键提交表单。
             }),
             m(AddBtn).on('click', (event) => {
                 event.preventDefault();
@@ -128,7 +128,7 @@ function create_input(type = 'text') {
 function create_item(comp, name, description) {
     return m('div').addClass('mb-3').append([
         m('label').attr({ for: comp.raw_id }).text(name),
-        m(comp).addClass('form-textinput'),
+        m(comp).addClass('form-textinput-fat'),
         m('div').addClass('form-text').text(description),
     ]);
 }

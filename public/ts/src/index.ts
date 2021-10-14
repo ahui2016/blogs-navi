@@ -18,7 +18,7 @@ const titleArea = m('div').addClass('text-center').append([
 
 const HintBtn = cc('a', {text:'Hint',attr:{href:'#',title:'显示说明'}});
 const Hint = cc('div', {classes:'Hint',children:[
-  m('button').text('hide').on('click', () => {
+  m('button').text('hide').addClass('btn').on('click', () => {
     Hint.elem().hide();
     HintBtn.elem().css('visibility', 'visible');
   }),
@@ -39,11 +39,11 @@ const Hint = cc('div', {classes:'Hint',children:[
   ]),
 ]});
 
-const PwdInput = cc('input', {attr:{type:'password',placeholder:'password'}});
+const PwdInput = cc('input', {classes:'form-textinput',attr:{type:'password',placeholder:'password'}});
 const CheckBtn = cc('button', {text:'check'});
 const CheckForm = cc('form', {classes:'text-right',children:[
   m(PwdInput),
-  m(CheckBtn).on('click', event => {
+  m(CheckBtn).addClass('btn ml-1').on('click', event => {
     event.preventDefault();
     checkBlogs();
   }),

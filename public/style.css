@@ -56,10 +56,14 @@ label {
 .form-textarea {
   resize: vertical;
 }
-.btn {
+.btn-fat {
   padding: .375rem .75rem;
 }
 .form-textinput {
+  border: 1px solid;
+  border-radius: .25rem;
+}
+.form-textinput-fat {
   display: block;
   width: 95%;
   line-height: 1.5;
@@ -93,7 +97,7 @@ label {
   }
 }
 
-@media (prefers-color-scheme: light) {
+@media (prefers-color-scheme: dark) {
   :root {
     --background-color: #3f3f46;
     --default-color: #a1a1aa;
@@ -164,7 +168,7 @@ label {
   }
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
     --background-color: #fefefe;
     --border-color: #71717a;

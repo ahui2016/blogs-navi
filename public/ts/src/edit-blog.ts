@@ -24,8 +24,8 @@ const PwdInput = create_input('password');
 
 const SubmitAlerts = util.CreateAlerts();
 const SubmitBtn = cc('button', {id:'submit',text:'submit'});
-const AddBtn = cc('button', {text:'Add',classes:'btn'});
-const UpdateBtn = cc('button', {text:'Update',classes:'btn'});
+const AddBtn = cc('button', {text:'Add',classes:'btn btn-fat'});
+const UpdateBtn = cc('button', {text:'Update',classes:'btn btn-fat'});
 const AddPostBtn = cc('a', {text:'AddPost',classes:'ml-2'});
 
 const Form = cc('form', {attr:{'autocomplete':'off'}, children: [
@@ -149,7 +149,7 @@ function create_input(type:string='text'): mjComponent {
 function create_item(comp: mjComponent, name: string, description: string): mjElement {
   return m('div').addClass('mb-3').append([
     m('label').attr({for:comp.raw_id}).text(name),
-    m(comp).addClass('form-textinput'),
+    m(comp).addClass('form-textinput-fat'),
     m('div').addClass('form-text').text(description),
   ]);
 }
