@@ -44,13 +44,29 @@ const SearchForm = cc('form', {attr:{autocomplete:'off'}, children: [
   ),
 ]});
 
+const CatListAlerts = util.CreateAlerts();
+const CatList = cc('ul');
+const CatListArea = cc('div', {children:[
+  m('h2').text('按类别筛选博客'),
+  m(Loading),
+  m(CatListAlerts),
+  m(CatList),
+]});
+
 $('#root').append([
   titleArea,
   naviBar,
-  m(Loading).hide(),
   m(Alerts),
   m(SearchForm),
+  m('hr').addClass('my-5'),
+  m(CatListArea),
 ]);
+
+init();
+
+function init() {
+  initCategories();
+}
 
 function create_input(type:string='text'): mjComponent {
   return cc('input', {attr:{type:type}});
@@ -61,4 +77,24 @@ function create_item(comp: mjComponent, name: string, description: string): mjEl
     m(comp).addClass('form-textinput form-textinput-fat'),
     m('div').addClass('form-text').text(description),
   ]);
+}
+
+function CatItem(cat: string): mjComponent {
+  return cc('li', {children:[
+    m('a').text(cat).attr('href', '/?cat='+encodeURIComponent(cat)),
+  ]});
+}
+
+function initCategories(): void {
+  util.ajax({method:'GET',url:'/api/get-cats',alerts:CatListAlerts},
+    (resp) => {
+      const cats = (resp as string[]).filter(cat => !!cat);
+      if (!resp || cats.length == 0) {
+        CatListAlerts.insert('primary', '找不到任何类别, 可在添加博客时设置类别');
+        return;
+      }
+      appendToList(CatList, cats.map(CatItem));
+    }, undefined, () => {
+      Loading.hide();
+    });
 }

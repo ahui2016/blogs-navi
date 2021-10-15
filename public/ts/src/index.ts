@@ -285,7 +285,7 @@ function updateFeed(header:Headers, errmsg: string, id: string): Promise<void> {
 
 (window as any).get_categories = () => {
   util.ajax({method:'GET',url:'/api/get-cats'}, (resp) => {
-    const cats = (resp as string[]).filter(cat => !!cat);    
+    const cats = (resp as string[]).filter(cat => !!cat);
     if (cats.length == 0) {
       console.log('warning: 找不到任何类别');
       return;
