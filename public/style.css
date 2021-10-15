@@ -109,6 +109,21 @@ label {
     background-color: var(--background-color);
   }
 
+  a {
+    color:#1098ad;
+  }
+
+  h1 a {
+    color: var(--default-color);
+  }
+  .BlogIDArea a {
+    color: var(--grey);
+  }
+  .BlogName a {
+    font-weight: bold;
+    color: var(--default-color);
+  }
+
   .text-default {
     color: var(--default-color);
   }
@@ -121,18 +136,6 @@ label {
   .badge-grey {
     color: var(--background-color);
     background-color: var(--grey); 
-  }
-  
-  .BlogIDArea a {
-    color: var(--grey);
-  }
-  .BlogName a {
-    font-weight: bold;
-    color: var(--default-color);
-  }
-
-  a {
-    color:#1098ad;
   }
 
   .alert-danger {
@@ -180,6 +183,21 @@ label {
     background-color: var(--background-color);
   }
 
+  a {
+    color:#1864ab;
+  }
+
+  h1 a {
+    color: var(--default-color);
+  }
+  .BlogIDArea a {
+    color: var(--grey);
+  }
+  .BlogName a {
+    font-weight: bold;
+    color: var(--default-color);
+  }
+
   .text-default {
     color: var(--default-color);
   }
@@ -192,18 +210,6 @@ label {
   .badge-grey {
     color: var(--background-color);
     background-color: var(--grey); 
-  }
-  
-  .BlogIDArea a {
-    color: var(--grey);
-  }
-  .BlogName a {
-    font-weight: bold;
-    color: var(--default-color);
-  }
-
-  a {
-    color:#1864ab;
   }
 
   pre {

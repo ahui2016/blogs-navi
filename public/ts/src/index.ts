@@ -1,4 +1,4 @@
-import { ajax, event } from 'jquery';
+// 采用受 Mithril 启发的基于 jQuery 实现的极简框架 https://github.com/ahui2016/mj.js
 import { mjElement, mjComponent, m, cc, span, appendToList } from './mj.js';
 import * as util from './util.js';
 
@@ -6,13 +6,16 @@ const Hour = 60 * 60;
 let blogs: util.Blog[];
 
 let CAT = util.getUrlParam('cat');
+let Pattern = util.getUrlParam('search');
 
 const Loading = util.CreateLoading('center');
 const Alerts = util.CreateAlerts();
 const Logs = util.CreateAlerts(0);
 
 const titleArea = m('div').addClass('text-center').append([
-  m('h1').text('博客更新导航'),
+  m('h1').append(
+    m('a').text('博客更新导航').attr('href', '/')
+  ),
   m('div').text('批量检测博客更新，提供源代码可自建服务'),
 ]);
 
@@ -63,6 +66,7 @@ const naviBar = m('div').addClass('text-right').append([
     });
   }),
   m('a').text('Add').attr({href:'/public/edit-blog.html',title:'添加博客'}).addClass('ml-2'),
+  m('a').text('Search').attr({href:'/public/search.html'}).addClass('ml-2'),
   m(HintBtn).addClass('ml-2').on('click', e => {
     e.preventDefault();
     HintBtn.elem().css('visibility', 'hidden');
@@ -73,9 +77,12 @@ const naviBar = m('div').addClass('text-right').append([
 const BlogList = cc('div');
 
 const Footer = cc('div', {classes:'text-center my-5',children:[
-  span('源码: '),
-  m('a').text('https://github.com/ahui2016/blogs-navi')
-      .attr({href:'https://github.com/ahui2016/blogs-navi',target:'_blank'}),
+  m('p').append(
+    span('源码: '),
+    m('a').text('https://github.com/ahui2016/blogs-navi')
+      .attr({href:'https://github.com/ahui2016/blogs-navi',target:'_blank'})
+  ),
+  m('p').text('version: 2021-10-15').addClass('text-grey'),
 ]});
 
 $('#root').append([
@@ -94,18 +101,29 @@ $('#root').append([
 init();
 
 function init() {
-  if (!CAT) CAT = 'with-feed';
-  const body = {category: CAT};
+  let notFoundMsg = `not found [category: ${CAT}]`;
+  let successMsg = '博客类别包含字符串: '+CAT;
+  if (!CAT) {
+    CAT = 'with-feed';
+    notFoundMsg = '请点击 Add 添加有 feed 的博客';
+    successMsg = '';
+  }
+  if (Pattern) {
+    CAT = '';
+    notFoundMsg = `search [${Pattern}]: not found`;
+    successMsg = '博客名、作者名或博客简介包含: '+Pattern;
+  }
+
+  const body = {category:CAT, pattern:Pattern};
   util.ajax({method:'POST',url:'/api/get-blogs',alerts:Alerts,body:body},
     resp => {
       blogs = resp as util.Blog[];
       if (!resp || blogs.length == 0) {
-        if (CAT == 'with-feed') {
-          Alerts.insert('primary', '请点击 Add 添加有 feed 的博客');
-        } else {
-          Alerts.insert('danger', `not found [category: ${CAT}]`);
-        }
+        Alerts.insert('danger', notFoundMsg);
         return;
+      }
+      if (successMsg) {
+        Alerts.insert('success', successMsg);
       }
       appendToList(BlogList, blogs.map(BlogItem));
       if (blogs.length > 5) {
@@ -140,7 +158,7 @@ function BlogItem(blog: util.Blog): mjComponent {
       self.elem().find('.BlogName').append(span(' by '+blog.Author).addClass('text-default'));
     }
     if (blog.Category) {
-      self.elem().find('.BlogCat').text(blog.Category).attr({href:'/?cat='+blog.Category});
+      self.elem().find('.BlogCat').text(blog.Category).attr({href:'/?cat='+encodeURIComponent(blog.Category)});
     }
     if (blog.Status != 'not yet') {
       self.elem().append(m('div').append([

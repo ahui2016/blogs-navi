@@ -15,6 +15,7 @@ func main() {
 	api := e.Group("/api", sleep)
 	api.POST("/get-blog", getBlogByID)
 	api.POST("/get-blogs", getBlogs)
+	api.POST("/count-search", countSearchResult)
 	api.GET("/get-cats", getCats)
 
 	// admin := e.Group("/admin", checkPassword)

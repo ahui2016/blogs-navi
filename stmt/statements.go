@@ -68,14 +68,6 @@ const InsertBlog = `INSERT INTO blog (
 
 const DeleteBlog = `DELETE FROM blog WHERE id=?;`
 
-const BlogsWithFeed = `
-	SELECT * FROM blog
-	WHERE feed<>'' ORDER BY lastupdate DESC;`
-
-const GetBlogsByCat = `
-	SELECT * FROM blog
-	WHERE category LIKE ? ORDER BY lastupdate DESC;`
-
 const GetBlogByID = `SELECT * FROM blog WHERE id=?;`
 
 const UpdateBlog = `UPDATE blog SET name=?, author=?,
@@ -87,3 +79,21 @@ const UpdateFeedResult = `UPDATE blog
 	WHERE id=?;`
 
 const GetCategories = `SELECT category from blog group by category;`
+
+const CountSearchResult = `
+	SELECT count(*) FROM blog
+	WHERE name LIKE ? OR author LIKE ? OR description LIKE ?
+	ORDER BY lastupdate DESC;`
+
+const SearchBlogs = `
+	SELECT * FROM blog
+	WHERE name LIKE ? OR author LIKE ? OR description LIKE ?
+	ORDER BY lastupdate DESC LIMIT 100;`
+
+const BlogsWithFeed = `
+	SELECT * FROM blog
+	WHERE feed<>'' ORDER BY lastupdate DESC;`
+
+const GetBlogsByCat = `
+	SELECT * FROM blog
+	WHERE category LIKE ? ORDER BY lastupdate DESC;`

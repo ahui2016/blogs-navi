@@ -1,4 +1,9 @@
+// 采用受 Mithril 启发的基于 jQuery 实现的极简框架 https://github.com/ahui2016/mj.js
 import { mjElement, mjComponent, m, cc, span } from './mj.js';
+
+export interface Text {
+  message: string;
+}
 
 export interface Blog {
   ID          :string;

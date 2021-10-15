@@ -1,3 +1,4 @@
+// 受 Mithril 启发的基于 jQuery 实现的极简框架 https://github.com/ahui2016/mj.js
 
 export type mjElement = JQuery<HTMLElement>;
 

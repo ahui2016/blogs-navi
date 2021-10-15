@@ -73,8 +73,22 @@ func getBlogByID(c echo.Context) error {
 	return c.JSON(OK, blog)
 }
 
+func countSearchResult(c echo.Context) error {
+	pattern, err := getFormValue(c, "pattern")
+	if err != nil {
+		return err
+	}
+	n, err := db.CountSearchResult(pattern)
+	if err != nil {
+		return err
+	}
+	return c.JSON(OK, Text{strconv.FormatInt(n, 10)})
+}
+
 func getBlogs(c echo.Context) error {
-	blogs, err := db.GetBlogs(c.FormValue("category"))
+	cat, _ := getFormValue(c, "category")
+	pattern, _ := getFormValue(c, "pattern")
+	blogs, err := db.GetBlogs(cat, pattern)
 	if err != nil {
 		return err
 	}

@@ -72,9 +72,20 @@ func (db *DB) GetBlogByID(id string) (blog Blog, err error) {
 	return
 }
 
-func (db *DB) GetBlogs(category string) (blogs []*Blog, err error) {
+func (db *DB) CountSearchResult(pattern string) (int64, error) {
+	p := "%" + pattern + "%"
+	return getInt1(db.DB, stmt.CountSearchResult, p, p, p)
+}
+
+func (db *DB) GetBlogs(category, pattern string) (blogs []*Blog, err error) {
 	var rows *sql.Rows
-	if category == "with-feed" {
+	if category+pattern == "" {
+		return nil, fmt.Errorf("nothing to search")
+	}
+	if category == "" {
+		p := "%" + pattern + "%"
+		rows, err = db.DB.Query(stmt.SearchBlogs, p, p, p)
+	} else if category == "with-feed" {
 		rows, err = db.DB.Query(stmt.BlogsWithFeed)
 	} else {
 		rows, err = db.DB.Query(stmt.GetBlogsByCat, "%"+category+"%")
