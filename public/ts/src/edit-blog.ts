@@ -9,9 +9,13 @@ const Alerts = util.CreateAlerts();
 
 const Title = cc('h1', {text: 'Add a new blog'});
 
-const naviBar = m('div').addClass('text-right').append([
-  m('a').text('Index').attr({href:'/'}),
-]);
+const InfoBtn = cc('a', {text:'Info',classes:'ml-2',attr:{
+  href: '/public/blog-info.html?id='+blogID
+}});
+const naviBar = m('div').addClass('text-right').append(
+  util.LinkElem('/', {text:'Index'}),
+  m(InfoBtn).hide(),
+);
 
 const NameInput = create_input();
 const AuthorInput = create_input();
@@ -41,7 +45,7 @@ const Form = cc('form', {attr:{'autocomplete':'off'}, children: [
   create_item(PwdInput, 'Password', '必须输入正确的管理员密码才能提交表单'),
 
   m(SubmitAlerts),
-  m('div').addClass('text-center my-5').append([
+  m('div').addClass('text-center my-5').append(
     m(SubmitBtn).hide().on('click', e => {
       e.preventDefault();
       return false; // 这个按钮是隐藏不用的，为了防止按回车键提交表单。
@@ -67,7 +71,7 @@ const Form = cc('form', {attr:{'autocomplete':'off'}, children: [
         });
     }).hide(),
     m(AddPostBtn).hide(),
-  ]),
+  ),
 ]});
 
 const EditBtn = cc('button', {text:'Edit',classes:'btn btn-fat'});
@@ -77,14 +81,14 @@ const EditBtnArea = cc('div', {classes:'text-center my-5',children:[
   })
 ]});
 
-$('#root').append([
+$('#root').append(
   m(Title),
   naviBar,
   m(Loading),
   m(Alerts),
   m(Form).hide(),
   m(EditBtnArea).hide(),
-]);
+);
 
 init();
 
@@ -102,8 +106,9 @@ function init() {
     (resp) => {
       const blog = resp as util.Blog;
       Form.elem().show();
-      AddBtn.elem().hide();
+      InfoBtn.elem().show();
       UpdateBtn.elem().show();
+      AddBtn.elem().hide();
       // AddPostBtn.elem().show().attr({
       //   href:'/public/add-post.html?id='+blog.ID,
       //   title:'添加文章'
@@ -148,11 +153,11 @@ function create_input(type:string='text'): mjComponent {
   return cc('input', {attr:{type:type}});
 }
 function create_item(comp: mjComponent, name: string, description: string): mjElement {
-  return m('div').addClass('mb-3').append([
+  return m('div').addClass('mb-3').append(
     m('label').attr({for:comp.raw_id}).text(name),
     m(comp).addClass('form-textinput form-textinput-fat'),
     m('div').addClass('form-text').text(description),
-  ]);
+  );
 }
 
 (window as any).delete_blog_and_its_post = () => {

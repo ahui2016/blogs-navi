@@ -5,13 +5,13 @@ import * as util from './util.js';
 const Loading = util.CreateLoading('center');
 const Alerts = util.CreateAlerts();
 
-const titleArea = m('div').addClass('text-center').append([
+const titleArea = m('div').addClass('text-center').append(
   m('h1').text('站内搜索'),
-]);
+);
 
-const naviBar = m('div').addClass('text-right').append([
+const naviBar = m('div').addClass('text-right').append(
   m('a').text('Index').attr({href:'/'}),
-]);
+);
 
 const SearchInput = create_input();
 const SearchAlerts = util.CreateAlerts(2);
@@ -53,14 +53,13 @@ const CatListArea = cc('div', {children:[
   m(CatList),
 ]});
 
-$('#root').append([
+$('#root').append(
   titleArea,
   naviBar,
   m(Alerts),
   m(SearchForm),
-  m('hr').addClass('my-5'),
-  m(CatListArea),
-]);
+  m(CatListArea).addClass('my-5'),
+);
 
 init();
 
@@ -72,11 +71,11 @@ function create_input(type:string='text'): mjComponent {
   return cc('input', {attr:{type:type}});
 }
 function create_item(comp: mjComponent, name: string, description: string): mjElement {
-  return m('div').addClass('mb-3').append([
+  return m('div').addClass('mb-3').append(
     m('label').attr({for:comp.raw_id}).text(name),
     m(comp).addClass('form-textinput form-textinput-fat'),
     m('div').addClass('form-text').text(description),
-  ]);
+  );
 }
 
 function CatItem(cat: string): mjComponent {
@@ -96,5 +95,6 @@ function initCategories(): void {
       appendToList(CatList, cats.map(CatItem));
     }, undefined, () => {
       Loading.hide();
+      SearchInput.elem().trigger('focus');
     });
 }

@@ -78,7 +78,8 @@ const UpdateFeedResult = `UPDATE blog
 	SET feedetag=?, feeddate=?, feedsize=?, lastupdate=?, status=?, errmsg=?
 	WHERE id=?;`
 
-const GetCategories = `SELECT category from blog group by category;`
+const GetCategories = `
+	SELECT category FROM blog GROUP BY category;`
 
 const CountSearchResult = `
 	SELECT count(*) FROM blog

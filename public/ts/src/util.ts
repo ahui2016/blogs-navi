@@ -216,6 +216,22 @@ export function itemID(id: string): string {
   return `i${id}`;
 }
 
+interface LinkOptions {
+  text?: string;
+  title?: string;
+  blank?: boolean;
+}
+export function LinkElem(href: string,options?:LinkOptions): mjElement {
+  if (!options) {
+    return m('a').text(href).attr('href', href);
+  }
+  if (!options.text) options.text = href
+  const link = m('a').text(options.text).attr('href', href);
+  if (options.title) link.attr('title', options.title);
+  if (options.blank) link.attr('target', '_blank');
+  return link;
+}
+
 function newFormData(name: string, value: string) {
   const fd = new FormData();
   fd.set(name, value);
