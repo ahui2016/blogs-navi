@@ -58,7 +58,7 @@ function init() {
         .append('Feed Size', blog.FeedSize.toFixed())
         .append('Last Update', dayjs.unix(blog.LastUpdate).format('YYYY-MM-DD hh:mm:ss'))
         .append('Last Check', dayjs.unix(blog.FeedDate).format('YYYY-MM-DD hh:mm:ss'))
-        .append('Status', blog.Status)
+        .append('Status', blog.Status ? blog.Status : 'not yet')
         .append('Error', blog.ErrMsg)
         .append('Description', blog.Description)
         .append('Links', m(Links));

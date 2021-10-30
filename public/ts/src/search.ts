@@ -2,7 +2,7 @@
 import { mjElement, mjComponent, m, cc, span, appendToList } from './mj.js';
 import * as util from './util.js';
 
-const Loading = util.CreateLoading('center');
+const Loading = util.CreateLoading();
 const Alerts = util.CreateAlerts();
 
 const titleArea = m('div').addClass('text-center').append(
@@ -53,12 +53,24 @@ const CatListArea = cc('div', {children:[
   m(CatList),
 ]});
 
+const RandomArea = cc('div', {children:[
+  m('h2').text('随机筛选博客'),
+  m('ul').append(
+    m('li').append(util.LinkElem('/?random=1', {text:'随机 (1)'})),
+    m('li').append(util.LinkElem('/?random=3', {text:'随机 (3)'})),
+    m('li').append(util.LinkElem('/?random=5', {text:'随机 (5)'})),
+    m('li').append(util.LinkElem('/?random=10', {text:'随机 (10)'})),
+    m('li').append(util.LinkElem('/?random=50', {text:'随机 (50)'})),
+  ),
+]});
+
 $('#root').append(
   titleArea,
   naviBar,
   m(Alerts),
   m(SearchForm),
   m(CatListArea).addClass('my-5'),
+  m(RandomArea).addClass('my-5'),
 );
 
 init();

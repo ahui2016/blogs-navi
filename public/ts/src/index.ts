@@ -7,6 +7,7 @@ let blogs: util.Blog[];
 
 let CAT = util.getUrlParam('cat');
 let Pattern = util.getUrlParam('search');
+let Random = util.getUrlParam('random');
 
 const Loading = util.CreateLoading('center');
 const Alerts = util.CreateAlerts();
@@ -91,8 +92,11 @@ $('#root').append(
 init();
 
 function init() {
+  let body: any;
+  let url = '/api/get-blogs';
   let notFoundMsg = `not found [category: ${CAT}]`;
   let successMsg = '博客类别包含字符串: '+CAT;
+
   if (!CAT) {
     CAT = 'with-feed';
     notFoundMsg = '请点击 Add 添加有 feed 的博客';
@@ -103,9 +107,18 @@ function init() {
     notFoundMsg = `search [${Pattern}]: not found`;
     successMsg = '博客名、作者名或博客简介包含: '+Pattern;
   }
+  body = {category:CAT, pattern:Pattern};
 
-  const body = {category:CAT, pattern:Pattern};
-  util.ajax({method:'POST',url:'/api/get-blogs',alerts:Alerts,body:body},
+  if (Random) {
+    CAT = '';
+    Pattern = '';
+    body = {random:Random};
+    url = '/api/get-random-blogs';
+    notFoundMsg = '在数据库中未找到任何博客/网站';
+    successMsg = `随机列出 ${Random} 个博客/网站`;
+  }
+
+  util.ajax({method:'POST',url:url,alerts:Alerts,body:body},
     resp => {
       blogs = resp as util.Blog[];
       if (!resp || blogs.length == 0) {
@@ -116,7 +129,7 @@ function init() {
         Alerts.insert('success', successMsg);
       }
       appendToList(BlogList, blogs.map(BlogItem));
-      if (blogs.length > 5) {
+      if (blogs.length >= 5) {
         Footer.elem().show();
       }
     }, undefined, () => {

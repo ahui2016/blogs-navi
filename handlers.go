@@ -95,6 +95,18 @@ func getBlogs(c echo.Context) error {
 	return c.JSON(OK, blogs)
 }
 
+func getRandomBlogs(c echo.Context) error {
+	n, err := getNumber(c, "random")
+	if err != nil {
+		return err
+	}
+	blogs, err := db.GetRandomBlogs(int(n))
+	if err != nil {
+		return err
+	}
+	return c.JSON(OK, blogs)
+}
+
 func getCats(c echo.Context) error {
 	cats, err := db.GetCategories()
 	if err != nil {

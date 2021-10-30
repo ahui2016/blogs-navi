@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	"ahui2016.github.com/blogs-navi/stmt"
+	"ahui2016.github.com/blogs-navi/util"
 )
 
 type TX interface {
@@ -101,4 +102,28 @@ func updateFeedResult(tx TX, blog Blog) error {
 		blog.ID,
 	)
 	return err
+}
+
+func getStrArr(tx TX, query string) (arr []string, err error) {
+	rows, err := tx.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var s string
+		if err := rows.Scan(&s); err != nil {
+			return nil, err
+		}
+		arr = append(arr, s)
+	}
+	return arr, rows.Err()
+}
+
+func getRandomBlogIDs(tx TX, limit int) ([]string, error) {
+	ids, err := getStrArr(tx, stmt.GetAllBlogIDs)
+	if err != nil {
+		return nil, err
+	}
+	return util.ShuffleStrArr(ids, limit), nil
 }

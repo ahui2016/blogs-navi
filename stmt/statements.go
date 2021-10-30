@@ -22,7 +22,6 @@ CREATE TABLE IF NOT EXISTS blog
 	category      text    NOT NULL
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS idx_blog_feed ON blog(feed);
 CREATE INDEX IF NOT EXISTS idx_blog_feedetag ON blog(feedetag);
 CREATE INDEX IF NOT EXISTS idx_blog_category ON blog(category);
 CREATE INDEX IF NOT EXISTS idx_blog_lastupdate ON blog(lastupdate);
@@ -98,3 +97,5 @@ const BlogsWithFeed = `
 const GetBlogsByCat = `
 	SELECT * FROM blog
 	WHERE category LIKE ? ORDER BY lastupdate DESC;`
+
+const GetAllBlogIDs = `SELECT id FROM blog;`

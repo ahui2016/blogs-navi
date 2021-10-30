@@ -3,6 +3,7 @@ package util
 import (
 	"encoding/base64"
 	"fmt"
+	"math/rand"
 	"os"
 	"strings"
 	"time"
@@ -105,4 +106,15 @@ func firstLineBreak(s string) int {
 		i = i2
 	}
 	return i
+}
+
+func ShuffleStrArr(arr []string, limit int) []string {
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(arr), func(i, j int) {
+		arr[i], arr[j] = arr[j], arr[i]
+	})
+	if len(arr) > limit {
+		return arr[:limit]
+	}
+	return arr
 }

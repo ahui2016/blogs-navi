@@ -82,6 +82,7 @@ func (db *DB) GetBlogs(category, pattern string) (blogs []*Blog, err error) {
 	if category+pattern == "" {
 		return nil, fmt.Errorf("nothing to search")
 	}
+
 	if category == "" {
 		p := "%" + pattern + "%"
 		rows, err = db.DB.Query(stmt.SearchBlogs, p, p, p)
@@ -93,6 +94,7 @@ func (db *DB) GetBlogs(category, pattern string) (blogs []*Blog, err error) {
 	if err != nil {
 		return
 	}
+
 	defer rows.Close()
 	for rows.Next() {
 		blog, err := scanBlog(rows)
@@ -104,20 +106,23 @@ func (db *DB) GetBlogs(category, pattern string) (blogs []*Blog, err error) {
 	return blogs, rows.Err()
 }
 
-func (db *DB) GetCategories() (categories []string, err error) {
-	rows, err := db.DB.Query(stmt.GetCategories)
+func (db *DB) GetRandomBlogs(limit int) (blogs []Blog, err error) {
+	ids, err := getRandomBlogIDs(db.DB, limit)
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
-	for rows.Next() {
-		var cat string
-		if err := rows.Scan(&cat); err != nil {
+	for _, id := range ids {
+		blog, err := db.GetBlogByID(id)
+		if err != nil {
 			return nil, err
 		}
-		categories = append(categories, cat)
+		blogs = append(blogs, blog)
 	}
-	return categories, rows.Err()
+	return
+}
+
+func (db *DB) GetCategories() ([]string, error) {
+	return getStrArr(db.DB, stmt.GetCategories)
 }
 
 // UpdateFeedResult 根据参数来决定是否更新 Blog.LastUpdate,
