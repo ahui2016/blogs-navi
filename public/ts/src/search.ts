@@ -64,6 +64,17 @@ const RandomArea = cc('div', {children:[
   ),
 ]});
 
+const MoreBlogLists = cc('div', {children:[
+  m('h2').text('更多博客名单'),
+  m('ul').append(
+    m('li').append(util.LinkElem('https://blorg.cn/', {text:'博客联盟',blank:true})),
+    m('li').append(util.LinkElem('https://storeweb.cn/', {text:'个站商店',blank:true})),
+    m('li').append(util.LinkElem('http://www.jetli.com.cn/', {text:'优秀个人独立博客导航',blank:true})),
+    m('li').append(util.LinkElem('https://www.foreverblog.cn/blogs.html', {text:'十年之约',blank:true})),
+    m('li').append(util.LinkElem('https://github.com/timqian/chinese-independent-blogs', {text:'中文独立博客列表',blank:true})),
+  ),
+]});
+
 $('#root').append(
   titleArea,
   naviBar,
@@ -71,6 +82,7 @@ $('#root').append(
   m(SearchForm),
   m(CatListArea).addClass('my-5'),
   m(RandomArea).addClass('my-5'),
+  m(MoreBlogLists).addClass('my-5'),
 );
 
 init();

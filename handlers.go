@@ -57,6 +57,9 @@ func updateBlogHandler(c echo.Context) error {
 }
 
 func deleteBlogHandler(c echo.Context) error {
+	if *demo {
+		return fmt.Errorf("你正在使用演示版，因此不可使用删除功能")
+	}
 	id := c.FormValue("id")
 	if _, err := db.GetBlogByID(id); err != nil {
 		return err
