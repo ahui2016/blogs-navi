@@ -46,12 +46,15 @@ function init() {
     (resp) => {
       const blog = resp as util.Blog;
       const Links = cc('div', {classes:'BlogLinks'});
+      const cat = blog.Category
+        ? util.LinkElem('/?cat='+encodeURIComponent(blog.Category),{text:blog.Category})
+        : '';
       BlogInfo.elem().show();
       BlogInfo
         .append('ID', blog.ID)
         .append('Name', util.LinkElem('/?search='+encodeURIComponent(blog.Name),{text:blog.Name}))
         .append('Author', blog.Author)
-        .append('Category', util.LinkElem('/?cat='+encodeURIComponent(blog.Category),{text:blog.Category}))
+        .append('Category', cat)
         .append('Website', util.LinkElem(blog.Website,{blank:true}))
         .append('Feed', util.LinkElem(blog.Feed,{blank:true}))
         .append('Threshold', blog.Threshold.toFixed())
