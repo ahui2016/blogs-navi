@@ -3,6 +3,7 @@ import { mjElement, mjComponent, m, cc, span, appendToList } from './mj.js';
 import * as util from './util.js';
 
 const Hour = 60 * 60;
+let TimeLimit = 24*Hour;
 let blogs: util.Blog[];
 
 let CAT = util.getUrlParam('cat');
@@ -45,7 +46,7 @@ const CheckForm = cc('form', {classes:'text-right',children:[
 ]});
 
 const DownloadDB = cc('a', {text:'blogs-navi.db',attr:{download:'blogs-navi.db'}});
-const RevokeBtn = cc('button', {text:'revoke'});
+const RevokeBtn = cc('button', {text:'revoke',classes:'ml-1'});
 
 const BtnShowCheckForm = cc('a', {text:'Check',attr:{href:'#',title:'批量检测'}});
 const naviBar = m('div').addClass('text-right').append(
@@ -206,7 +207,7 @@ async function checkBlogs() {
       Logs.insert('info', '没有 feed, 不检查。')
       continue;
     }
-    if (dayjs().unix() - blog.FeedDate < 24*Hour) {
+    if (dayjs().unix() - blog.FeedDate < TimeLimit) {
       Logs.insert('info', '距离上次检查时间未超过 24 小时，忽略本次检查。');
       continue;
     }
@@ -323,3 +324,8 @@ function updateFeed(header:Headers, errmsg: string, id: string): Promise<void> {
       console.log('success: 已删除该博客及与之关联的文章，不可恢复');
     });
 };
+
+(window as any).disable_time_limit = () => {
+  TimeLimit = 0;
+  console.log("OK, you are not limited by time.");
+}

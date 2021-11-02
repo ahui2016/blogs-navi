@@ -82,3 +82,11 @@ function create_table_row(key:string,value:string|mjElement): mjElement {
   }
   return tr;
 }
+
+(window as any).delete_blog_and_its_post = () => {
+  const body = { id:blogID, pwd:'' };
+  util.ajax({method:'POST',url:'/admin/delete-blog',body:body},
+    () => {
+      console.log('success: 已删除该博客及与之关联的文章，不可恢复');
+    });
+};

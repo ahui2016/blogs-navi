@@ -14,11 +14,13 @@
 
 以上是我制作 blogs-navi 的背景，那么, blogs-navi 具体是什么呢？
 
+
 ## blogs-navi 是一个可批量检测更新的博客导航程序
 
 - 最直观的了解请看在线演示: [navi.ai42.xyz](navi.ai42.xyz) (密码 abc)
 - 在演示版中，已经包含了少量博客，但建议你自己搭建 blogs-navi, 自己收集博客 (因为演示版人人皆可修改，数据会被随时删除)。
 - 使用 blogs-navi 可收集博客网址、对已收集的博客进行分类和搜索、随机筛选博客、批量检测博客更新。
+
 
 ## 安装使用
 
@@ -48,13 +50,29 @@ $ ./blogs-navi -addr 127.0.0.1:955
 - 建议刚开始时可使用 "-local" 参数，添加一些博客之后再重启程序恢复需要密码的状态。
 - 如果一直在本地使用（不搭建网站），可一直使用 "-local" 参数。
 
+
 ## 关于批量检测更新
 
-- 本软件暂时采用前端检测，即通过直接在前端用 js 访问 其他网站来检测其是否有更新，因此会遇到 CORS 问题，因此 **必须使用浏览器插件**，比如:
+- 本软件暂时采用前端检测，即通过直接在前端用 js 访问其他网站来检测其是否有更新，因此会遇到 CORS 问题，**必须使用浏览器插件**，比如:
   - [CORS Unblock](https://chrome.google.com/webstore/detail/cors-unblock/lfhmikememgdcahcdlaciloancbhjino/) (推荐)
   - [Allow CORS](https://chrome.google.com/webstore/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf)
 - 我也考虑过用后端检测，但前端检测可减轻服务器负担，还有一个大好处：翻墙更方便，只要浏览器能访问的网站就肯定能检测。
 - 另外推荐使用（不是必须）[RSSHub Radar](https://chrome.google.com/webstore/detail/rsshub-radar/kefjpfngnndepjbopdmoebkipbgkggaa) 来获取博客的 RSS feed.
+- 批量检测功能，只会检测当前页面中列出的博客，因此可使用搜索功能筛选出特定的博客进行有针对性的检测。
+- 由于博客一般不会频繁更新，为了减少对别人博客造成不必要的流量负担，默认需要间隔 24 小时才能再次检测。可按 F12 打开控制台输入命令 `disable_time_limit()` 解除该时间限制。
+
+
+## 删除博客
+
+- 由于删除后不可恢复，属于危险操作，因此删除功能采用了更复杂的操作方式。
+- 在编辑博客信息的页面 (Edit Blog), 在 Password 文本框中输入正确的密码，按键盘的 F12 键打开浏览器的控制台，输入命令 `delete_blog_and_its_post()` 按回车即可删除博客。
+- 在首页 (index.html) 点击 Check 按钮，输入密码, 按键盘的 F12 键打开浏览器的控制台，输入命令 `delete_blog_and_its_post('blog-id')` 按回车即可删除博客（其中 blog-id 要改为想要删除的博客的 ID）。
+
+
+## 备份数据库
+
+- 在首页 (index.html) 点击 Check 按钮，输入密码, 按键盘的 F12 键打开浏览器的控制台，输入命令 `download_db()` 按回车，会在密码框下显示 'blogs-navi.db', 右键点击另存为，即可下载数据库。
+- 今后会提供导出为 JSON 的功能。
 
 
 ## 高级功能
