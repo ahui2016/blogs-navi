@@ -315,3 +315,11 @@ function updateFeed(header:Headers, errmsg: string, id: string): Promise<void> {
       });
     });
 }
+
+(window as any).delete_blog_and_its_post = (blogID:string) => {
+  const body = { id: blogID, pwd: util.val(PwdInput) };
+  util.ajax({method:'POST',url:'/admin/delete-blog',body:body},
+    () => {
+      console.log('success: 已删除该博客及与之关联的文章，不可恢复');
+    });
+};

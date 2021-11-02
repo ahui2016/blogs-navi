@@ -30,6 +30,7 @@ var (
 	db       = new(database.DB)
 	addr     = flag.String("addr", "127.0.0.1:80", "local IP address")
 	demo     = flag.Bool("demo", false, "set this flag for demo")
+	local    = flag.Bool("local", false, "set this flag if you don't need password protection")
 )
 
 func init() {

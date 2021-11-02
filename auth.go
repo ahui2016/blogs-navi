@@ -23,6 +23,9 @@ func checkIPTryCount(ip string) error {
 
 func checkPassword(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
+		if *local {
+			return next(c)
+		}
 		ip := c.RealIP()
 		if err := checkIPTryCount(ip); err != nil {
 			return err

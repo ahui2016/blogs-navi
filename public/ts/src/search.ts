@@ -20,8 +20,8 @@ const SearchForm = cc('form', {attr:{autocomplete:'off'}, children: [
   create_item(SearchInput, '搜索博客名、作者名和博客简介', ''),
   m(SearchAlerts),
   m('div').addClass('text-center').append(
-    m(SearchBtn).on('click', (e) => {
-      e.preventDefault();
+    m(SearchBtn).on('click', event => {
+      event.preventDefault();
       const pattern = util.val(SearchInput);
       SearchAlerts.insert('primary', 'searching: '+pattern);
       const body = {pattern: pattern};
