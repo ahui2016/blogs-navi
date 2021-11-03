@@ -18,11 +18,12 @@ const (
 	dbFileName         = "db-blogs-navi.sqlite"
 	pwdFileName        = "pwd.txt"
 	defaultTHold       = 0
-	catLengthLimit     = 30                  // 类型长度限 制
+	catLengthLimit     = 30                  // 类型字数长度限制
 	nameAndAuthorLimit = 90                  // 博客名称+作者名称的长度限制
 	linkLengthLimit    = 256                 // 网址长度限制
 	linksLimit         = linkLengthLimit * 5 // links 总长度限制
 	descLengthLimit    = 512                 // 博客简介长度限制
+	demoCountLimit     = 300                 // demo博客数量限制
 )
 
 var (

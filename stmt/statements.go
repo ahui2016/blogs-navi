@@ -99,3 +99,5 @@ const GetBlogsByCat = `
 	WHERE category LIKE ? ORDER BY lastupdate DESC;`
 
 const GetAllBlogIDs = `SELECT id FROM blog;`
+
+const CountAllBlogs = `SELECT count(*) FROM blog;`

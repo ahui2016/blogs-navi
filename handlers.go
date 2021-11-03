@@ -31,6 +31,15 @@ func errorHandler(err error, c echo.Context) {
 }
 
 func addBlogHandler(c echo.Context) error {
+	if *demo {
+		n, err := db.CountAllBlogs()
+		if err != nil {
+			return err
+		}
+		if n > demoCountLimit {
+			return fmt.Errorf("无法添加博客，博客数量达到演示版上限 (%d)", demoCountLimit)
+		}
+	}
 	blog, err := getBlogValue(c)
 	if err != nil {
 		return err

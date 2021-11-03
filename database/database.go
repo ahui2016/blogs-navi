@@ -77,6 +77,10 @@ func (db *DB) CountSearchResult(pattern string) (int64, error) {
 	return getInt1(db.DB, stmt.CountSearchResult, p, p, p)
 }
 
+func (db *DB) CountAllBlogs() (int64, error) {
+	return getInt1(db.DB, stmt.CountAllBlogs)
+}
+
 func (db *DB) GetBlogs(category, pattern string) (blogs []*Blog, err error) {
 	var rows *sql.Rows
 	if category+pattern == "" {
