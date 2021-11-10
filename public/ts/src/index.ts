@@ -70,11 +70,10 @@ const naviBar = m('div').addClass('text-right').append(
 const BlogList = cc('div');
 
 const Footer = cc('div', {classes:'text-center my-5',children:[
-  m('p').append(
     span('源码: '),
-    util.LinkElem('https://github.com/ahui2016/blogs-navi',{blank:true})
-  ),
-  m('p').text('version: 2021-10-15').addClass('text-grey'),
+    util.LinkElem('https://github.com/ahui2016/blogs-navi',{blank:true}),
+    m('br'),
+    span('version: 2021-11-10').addClass('text-grey'),
 ]});
 
 $('#root').append(

@@ -23,19 +23,22 @@ function init() {
         var _a;
         const blog = resp;
         const Links = cc('div', { classes: 'BlogLinks' });
+        const cat = blog.Category
+            ? util.LinkElem('/?cat=' + encodeURIComponent(blog.Category), { text: blog.Category })
+            : '';
         BlogInfo.elem().show();
         BlogInfo
             .append('ID', blog.ID)
             .append('Name', util.LinkElem('/?search=' + encodeURIComponent(blog.Name), { text: blog.Name }))
             .append('Author', blog.Author)
-            .append('Category', util.LinkElem('/?cat=' + encodeURIComponent(blog.Category), { text: blog.Category }))
+            .append('Category', cat)
             .append('Website', util.LinkElem(blog.Website, { blank: true }))
             .append('Feed', util.LinkElem(blog.Feed, { blank: true }))
             .append('Threshold', blog.Threshold.toFixed())
             .append('Feed Size', blog.FeedSize.toFixed())
             .append('Last Update', dayjs.unix(blog.LastUpdate).format('YYYY-MM-DD hh:mm:ss'))
             .append('Last Check', dayjs.unix(blog.FeedDate).format('YYYY-MM-DD hh:mm:ss'))
-            .append('Status', blog.Status)
+            .append('Status', blog.Status ? blog.Status : 'not yet')
             .append('Error', blog.ErrMsg)
             .append('Description', blog.Description)
             .append('Links', m(Links));
@@ -56,3 +59,9 @@ function create_table_row(key, value) {
     }
     return tr;
 }
+window.delete_blog_and_its_post = () => {
+    const body = { id: blogID, pwd: '' };
+    util.ajax({ method: 'POST', url: '/admin/delete-blog', body: body }, () => {
+        console.log('success: 已删除该博客及与之关联的文章，不可恢复');
+    });
+};

@@ -1,3 +1,4 @@
+// 采用受 Mithril 启发的基于 jQuery 实现的极简框架 https://github.com/ahui2016/mj.js
 import { m, cc } from './mj.js';
 // 获取地址栏的参数。
 export function getUrlParam(param) {
@@ -153,6 +154,19 @@ export function val(obj) {
 }
 export function itemID(id) {
     return `i${id}`;
+}
+export function LinkElem(href, options) {
+    if (!options) {
+        return m('a').text(href).attr('href', href);
+    }
+    if (!options.text)
+        options.text = href;
+    const link = m('a').text(options.text).attr('href', href);
+    if (options.title)
+        link.attr('title', options.title);
+    if (options.blank)
+        link.attr('target', '_blank');
+    return link;
 }
 function newFormData(name, value) {
     const fd = new FormData();

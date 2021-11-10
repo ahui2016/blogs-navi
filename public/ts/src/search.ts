@@ -76,6 +76,13 @@ const MoreBlogLists = cc('div', {children:[
   ),
 ]});
 
+const Footer = cc('div', {classes:'text-center my-5',children:[
+  span('源码: '),
+  util.LinkElem('https://github.com/ahui2016/blogs-navi',{blank:true}),
+  m('br'),
+  span('version: 2021-11-10').addClass('text-grey'),
+]});
+
 $('#root').append(
   titleArea,
   naviBar,
@@ -84,6 +91,7 @@ $('#root').append(
   m(CatListArea).addClass('my-5'),
   m(RandomArea).addClass('my-5'),
   m(MoreBlogLists).addClass('my-5'),
+  m(Footer),
 );
 
 init();

@@ -1,12 +1,14 @@
+// 采用受 Mithril 启发的基于 jQuery 实现的极简框架 https://github.com/ahui2016/mj.js
 import { m, cc } from './mj.js';
 import * as util from './util.js';
 let blogID = util.getUrlParam('id');
 const Loading = util.CreateLoading('center');
 const Alerts = util.CreateAlerts();
 const Title = cc('h1', { text: 'Add a new blog' });
-const naviBar = m('div').addClass('text-right').append([
-    m('a').text('Index').attr({ href: '/' }),
-]);
+const InfoBtn = cc('a', { text: 'Info', classes: 'ml-2', attr: {
+        href: '/public/blog-info.html?id=' + blogID
+    } });
+const naviBar = m('div').addClass('text-right').append(util.LinkElem('/', { text: 'Index' }), m(InfoBtn).hide());
 const NameInput = create_input();
 const AuthorInput = create_input();
 const WebsiteInput = create_input();
@@ -29,49 +31,37 @@ const Form = cc('form', { attr: { 'autocomplete': 'off' }, children: [
         create_item(THoldInput, 'Threshold', '用于判断有无更新的阈值 (单位:byte), 留空或填写 0 将采用默认值'),
         create_item(DescInput, 'Description', '博客/网站的简介、备注'),
         create_item(LinksInput, 'Links', '相关网址 (比如作者的 twitter), 请以 http 开头，每行一个网址'),
-        create_item(CatInput, 'Category', '类别，自由填写任意字符串 (筛选类别时按前缀筛选)'),
+        create_item(CatInput, 'Category', '类别，自由填写任意字符串'),
         create_item(PwdInput, 'Password', '必须输入正确的管理员密码才能提交表单'),
         m(SubmitAlerts),
-        m('div').addClass('text-center my-5').append([
-            m(SubmitBtn).hide().on('click', e => {
-                e.preventDefault();
-                return false; // 这个按钮是隐藏不用的，为了防止按回车键提交表单。
-            }),
-            m(AddBtn).on('click', (event) => {
-                event.preventDefault();
-                const body = newBlogForm();
-                util.ajax({ method: 'POST', url: '/admin/add-blog', alerts: SubmitAlerts, buttonID: AddBtn.id, body: body }, (resp) => {
-                    blogID = resp.message;
-                    Alerts.insert('success', '点击下面的 Edit 按钮可编辑博客资料');
-                    Alerts.insert('success', '成功添加博客');
-                    Form.elem().hide();
-                    EditBtnArea.elem().show();
-                });
-            }),
-            m(UpdateBtn).on('click', event => {
-                event.preventDefault();
-                const body = newBlogForm();
-                util.ajax({ method: 'POST', url: '/admin/update-blog', alerts: SubmitAlerts, buttonID: UpdateBtn.id, body: body }, () => {
-                    SubmitAlerts.insert('success', '更新成功');
-                });
-            }).hide(),
-            m(AddPostBtn).hide(),
-        ]),
+        m('div').addClass('text-center my-5').append(m(SubmitBtn).hide().on('click', e => {
+            e.preventDefault();
+            return false; // 这个按钮是隐藏不用的，为了防止按回车键提交表单。
+        }), m(AddBtn).on('click', (event) => {
+            event.preventDefault();
+            const body = newBlogForm();
+            util.ajax({ method: 'POST', url: '/admin/add-blog', alerts: SubmitAlerts, buttonID: AddBtn.id, body: body }, (resp) => {
+                blogID = resp.message;
+                Alerts.insert('success', '点击下面的 Edit 按钮可编辑博客资料');
+                Alerts.insert('success', '成功添加博客');
+                Form.elem().hide();
+                EditBtnArea.elem().show();
+            });
+        }), m(UpdateBtn).on('click', event => {
+            event.preventDefault();
+            const body = newBlogForm();
+            util.ajax({ method: 'POST', url: '/admin/update-blog', alerts: SubmitAlerts, buttonID: UpdateBtn.id, body: body }, () => {
+                SubmitAlerts.insert('success', '更新成功');
+            });
+        }).hide(), m(AddPostBtn).hide()),
     ] });
-const EditBtn = cc('button', { text: 'Edit', classes: 'btn' });
+const EditBtn = cc('button', { text: 'Edit', classes: 'btn btn-fat' });
 const EditBtnArea = cc('div', { classes: 'text-center my-5', children: [
         m(EditBtn).on('click', () => {
             location.href = '/public/edit-blog.html?id=' + blogID;
         })
     ] });
-$('#root').append([
-    m(Title),
-    naviBar,
-    m(Loading),
-    m(Alerts),
-    m(Form).hide(),
-    m(EditBtnArea).hide(),
-]);
+$('#root').append(m(Title), naviBar, m(Loading), m(Alerts), m(Form).hide(), m(EditBtnArea).hide());
 init();
 function init() {
     if (!blogID) {
@@ -84,8 +74,9 @@ function init() {
     util.ajax({ method: 'POST', url: '/api/get-blog', alerts: Alerts, body: { id: blogID } }, (resp) => {
         const blog = resp;
         Form.elem().show();
-        AddBtn.elem().hide();
+        InfoBtn.elem().show();
         UpdateBtn.elem().show();
+        AddBtn.elem().hide();
         // AddPostBtn.elem().show().attr({
         //   href:'/public/add-post.html?id='+blog.ID,
         //   title:'添加文章'
@@ -126,11 +117,7 @@ function create_input(type = 'text') {
     return cc('input', { attr: { type: type } });
 }
 function create_item(comp, name, description) {
-    return m('div').addClass('mb-3').append([
-        m('label').attr({ for: comp.raw_id }).text(name),
-        m(comp).addClass('form-textinput form-textinput-fat'),
-        m('div').addClass('form-text').text(description),
-    ]);
+    return m('div').addClass('mb-3').append(m('label').attr({ for: comp.raw_id }).text(name), m(comp).addClass('form-textinput form-textinput-fat'), m('div').addClass('form-text').text(description));
 }
 window.delete_blog_and_its_post = () => {
     const body = {

@@ -1,3 +1,4 @@
+// 受 Mithril 启发的基于 jQuery 实现的极简框架 https://github.com/ahui2016/mj.js
 /**
  * 函数名 m 来源于 Mithril, 也可以理解为 make 的简称，用来创建一个元素。
  */
