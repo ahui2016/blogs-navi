@@ -20,7 +20,7 @@ func main() {
 	api.GET("/get-cats", getCats)
 
 	// admin := e.Group("/admin", checkPassword)
-	admin := e.Group("/admin", sleep, checkPassword)
+	admin := e.Group("/admin", checkPassword)
 	admin.POST("/check-only", func(c echo.Context) error { return c.NoContent(OK) })
 	admin.POST("/add-blog", addBlogHandler)
 	admin.POST("/update-blog", updateBlogHandler)
