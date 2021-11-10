@@ -17,7 +17,7 @@
 
 ## blogs-navi 是一个可批量检测更新的博客导航程序
 
-- 最直观的了解请看在线演示: [navi.ai42.xyz](navi.ai42.xyz) (密码 abc)
+- 最直观的了解请看在线演示: [https://navi.ai42.xyz](https://navi.ai42.xyz) (密码 abc)
 - 在演示版中，已经包含了少量博客，但建议你自己搭建 blogs-navi, 自己收集博客 (因为演示版人人皆可修改，数据会被随时删除)。
 - 使用 blogs-navi 可收集博客网址、对已收集的博客进行分类和搜索、随机筛选博客、批量检测博客更新。
 
@@ -25,7 +25,8 @@
 ## 安装使用
 
 - 在设计上是一个网站，需要架设在 VPS 里，需要有建站的基础知识。
-- 另外，如果不想建站，也可不使用 VPS, 通过访问 http://localhost 的方式在本地电脑中使用。
+- 另外，如果不想建站，也可不使用 VPS, 通过访问 http://localhost 的方式在本地电脑中使用 (Windows 用户可
+[直接下载 exe 文件](https://github.com/ahui2016/blogs-navi/releases) 在本地试用)。
 - 先正确安装 [git](https://git-scm.com/downloads) 和 [Go 语言环境](https://golang.google.cn/doc/install).
 - 然后在终端执行以下命令:
 
