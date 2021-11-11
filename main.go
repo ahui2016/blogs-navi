@@ -12,7 +12,7 @@ func main() {
 	e.Static("/public", "public")
 	e.File("/", "public/index.html")
 
-	api := e.Group("/api", sleep)
+	api := e.Group("/api")
 	api.POST("/get-blog", getBlogByID)
 	api.POST("/get-blogs", getBlogs)
 	api.POST("/get-random-blogs", getRandomBlogs)
