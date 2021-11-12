@@ -74,6 +74,7 @@ const MoreBlogLists = cc('div', {children:[
     m('li').append(util.LinkElem('https://www.foreverblog.cn/blogs.html', {text:'十年之约',blank:true})),
     m('li').append(util.LinkElem('https://github.com/timqian/chinese-independent-blogs', {text:'中文独立博客列表',blank:true})),
     m('li').append(util.LinkElem('https://github.com/volfclub/travellings', {text:'开往-友链接力',blank:true})),
+    m('li').append(util.LinkElem('https://www.ohyee.cc/friends', {text:'优秀博客订阅',blank:true})),
   ),
 ]});
 
