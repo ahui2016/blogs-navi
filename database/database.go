@@ -82,10 +82,11 @@ func (db *DB) CountAllBlogs() (int64, error) {
 }
 
 func (db *DB) GetBlogs(category, pattern string) (blogs []*Blog, err error) {
-	var rows *sql.Rows
 	if category+pattern == "" {
 		return nil, fmt.Errorf("nothing to search")
 	}
+
+	var rows *sql.Rows
 
 	if category == "" {
 		p := "%" + pattern + "%"
@@ -107,7 +108,8 @@ func (db *DB) GetBlogs(category, pattern string) (blogs []*Blog, err error) {
 		}
 		blogs = append(blogs, &blog)
 	}
-	return blogs, rows.Err()
+	err = rows.Err()
+	return
 }
 
 func (db *DB) GetRandomBlogs(limit int) (blogs []Blog, err error) {

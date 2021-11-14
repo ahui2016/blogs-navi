@@ -74,6 +74,7 @@ label {
 }
 .btn-fat {
   padding: .375rem .75rem;
+  border-radius: .25rem;
 }
 .form-textinput {
   border: 1px solid;
