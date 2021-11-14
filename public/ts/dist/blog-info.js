@@ -61,7 +61,7 @@ function create_table_row(key, value) {
 }
 window.delete_blog_and_its_post = () => {
     const body = { id: blogID, pwd: '' };
-    util.ajax({ method: 'POST', url: '/admin/delete-blog', body: body }, () => {
-        console.log('success: 已删除该博客及与之关联的文章，不可恢复');
+    util.ajax({ method: 'POST', url: '/admin/delete-blog', alerts: Alerts, body: body }, () => {
+        Alerts.clear().insert('danger', '已删除该博客及与之关联的文章，不可恢复');
     });
 };

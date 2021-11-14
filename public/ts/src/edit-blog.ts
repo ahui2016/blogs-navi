@@ -96,6 +96,7 @@ function init() {
   if (!blogID) {
     Loading.hide();
     Form.elem().show();
+    NameInput.elem().trigger('focus');
     return;
   }
 
@@ -122,6 +123,8 @@ function init() {
       DescInput.elem().val(blog.Description);
       LinksInput.elem().val(blog.Links);
       CatInput.elem().val(blog.Category);
+
+      NameInput.elem().trigger('focus');
     }, undefined, () => {
       Loading.hide();
     });
@@ -129,7 +132,7 @@ function init() {
 
 function newBlogForm() {
   const links = util.val(LinksInput)
-    .split('\n').map(line => line.trim()).filter(line => line.length > 0)
+    .split(/\s/).map(line => line.trim()).filter(line => line.length > 0)
     .join('\n');
 
   return {

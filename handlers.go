@@ -59,6 +59,7 @@ func updateBlogHandler(c echo.Context) error {
 	if blog.ID == "" {
 		return fmt.Errorf("id is empty, need an id")
 	}
+	// 确保 blog.ID 存在于数据库中
 	if _, err = db.GetBlogByID(blog.ID); err != nil {
 		return err
 	}

@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS blog
 	name          text    NOT NULL,
 	author        text    NOT NULL,
 	website       text    NOT NULL,
-	links         blob    DEFAULT NULL,
+	links         text    NOT NULL,
 	description   text    NOT NULL,
 	feed          text    NOT NULL,
 	feedetag      text    NOT NULL,
