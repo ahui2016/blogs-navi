@@ -232,8 +232,16 @@ export function LinkElem(href: string,options?:LinkOptions): mjElement {
   return link;
 }
 
-function newFormData(name: string, value: string) {
-  const fd = new FormData();
-  fd.set(name, value);
-  return fd;
+export function create_textarea(rows: number=3): mjComponent {
+  return cc('textarea', {classes:'form-textarea', attr:{'rows': rows}});
+}
+export function create_input(type:string='text'): mjComponent {
+  return cc('input', {attr:{type:type}});
+}
+export function create_item(comp: mjComponent, name: string, description: string): mjElement {
+  return m('div').addClass('mb-3').append(
+    m('label').attr({for:comp.raw_id}).text(name),
+    m(comp).addClass('form-textinput form-textinput-fat'),
+    m('div').addClass('form-text').text(description),
+  );
 }

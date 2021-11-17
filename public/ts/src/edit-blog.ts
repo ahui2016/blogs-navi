@@ -13,36 +13,36 @@ const InfoBtn = cc('a', {text:'Info',classes:'ml-2',attr:{
   href: '/public/blog-info.html?id='+blogID
 }});
 const naviBar = m('div').addClass('text-right').append(
-  util.LinkElem('/', {text:'Index'}),
+  util.LinkElem('/home', {text:'Index'}),
   m(InfoBtn).hide(),
 );
 
-const NameInput = create_input();
-const AuthorInput = create_input();
-const WebsiteInput = create_input();
-const FeedInput = create_input();
-const THoldInput = create_input('number');
-const DescInput = create_textarea();
-const LinksInput = create_textarea();
-const CatInput = create_input();
-const PwdInput = create_input('password');
+const NameInput =    util.create_input();
+const AuthorInput =  util.create_input();
+const WebsiteInput = util.create_input();
+const FeedInput =    util.create_input();
+const THoldInput =   util.create_input('number');
+const DescInput =    util.create_textarea();
+const LinksInput =   util.create_textarea();
+const CatInput =     util.create_input();
+const PwdInput =     util.create_input('password');
 
 const SubmitAlerts = util.CreateAlerts();
-const SubmitBtn = cc('button', {id:'submit',text:'submit'});
+const SubmitBtn = cc('button', {id:'submit',text:'submit'}); // 该按钮只是用来防止回车提交表单
 const AddBtn = cc('button', {text:'Add',classes:'btn btn-fat'});
 const UpdateBtn = cc('button', {text:'Update',classes:'btn btn-fat'});
 const AddPostBtn = cc('a', {text:'AddPost',classes:'ml-2'});
 
 const Form = cc('form', {attr:{'autocomplete':'off'}, children: [
-  create_item(NameInput, 'Name', '博客或网站名称'),
-  create_item(AuthorInput, 'Author', '该博客或网站的作者/站长，也可填写 email'),
-  create_item(WebsiteInput, 'Website', '该博客或网站的网址'),
-  create_item(FeedInput, 'Feed', '比如 RSS feed 或文章列表的网址, 必须有 feed 能加入批量检测列表（没有 feed 的博客/网站不会出现在 index 列表中）'),
-  create_item(THoldInput, 'Threshold', '用于判断有无更新的阈值 (单位:byte), 留空或填写 0 将采用默认值'),
-  create_item(DescInput, 'Description', '博客/网站的简介、备注'),
-  create_item(LinksInput, 'Links', '相关网址 (比如作者的 twitter), 请以 http 开头，每行一个网址'),
-  create_item(CatInput, 'Category', '类别，自由填写任意字符串'),
-  create_item(PwdInput, 'Password', '必须输入正确的管理员密码才能提交表单'),
+  util.create_item(NameInput, 'Name', '博客或网站名称'),
+  util.create_item(AuthorInput, 'Author', '该博客或网站的作者/站长，也可填写 email'),
+  util.create_item(WebsiteInput, 'Website', '该博客或网站的网址'),
+  util.create_item(FeedInput, 'Feed', '比如 RSS feed 或文章列表的网址, 必须有 feed 能加入批量检测列表（没有 feed 的博客/网站不会出现在 index 列表中）'),
+  util.create_item(THoldInput, 'Threshold', '用于判断有无更新的阈值 (单位:byte), 留空或填写 0 将采用默认值'),
+  util.create_item(DescInput, 'Description', '博客/网站的简介、备注'),
+  util.create_item(LinksInput, 'Links', '相关网址 (比如作者的 twitter), 请以 http 开头，每行一个网址'),
+  util.create_item(CatInput, 'Category', '类别，自由填写任意字符串'),
+  util.create_item(PwdInput, 'Password', '必须输入正确的管理员密码才能提交表单'),
 
   m(SubmitAlerts),
   m('div').addClass('text-center my-5').append(
@@ -70,7 +70,11 @@ const Form = cc('form', {attr:{'autocomplete':'off'}, children: [
           SubmitAlerts.insert('success', '更新成功');
         });
     }).hide(),
-    m(AddPostBtn).hide(),
+    m(AddPostBtn).attr({
+      href   :'/public/edit-post.html?blogid='+blogID,
+      target :'_blank',
+      Title  :'添加文章'
+    }).hide(),
   ),
 ]});
 
@@ -110,10 +114,7 @@ function init() {
       InfoBtn.elem().show();
       UpdateBtn.elem().show();
       AddBtn.elem().hide();
-      // AddPostBtn.elem().show().attr({
-      //   href:'/public/add-post.html?id='+blog.ID,
-      //   title:'添加文章'
-      // });
+      AddPostBtn.elem().show();
 
       NameInput.elem().val(blog.Name);
       AuthorInput.elem().val(blog.Author);
@@ -147,20 +148,6 @@ function newBlogForm() {
     links: links,
     category: util.val(CatInput).trim(),
   };
-}
-
-function create_textarea(rows: number=3): mjComponent {
-  return cc('textarea', {classes:'form-textarea', attr:{'rows': rows}});
-}
-function create_input(type:string='text'): mjComponent {
-  return cc('input', {attr:{type:type}});
-}
-function create_item(comp: mjComponent, name: string, description: string): mjElement {
-  return m('div').addClass('mb-3').append(
-    m('label').attr({for:comp.raw_id}).text(name),
-    m(comp).addClass('form-textinput form-textinput-fat'),
-    m('div').addClass('form-text').text(description),
-  );
 }
 
 (window as any).delete_blog_and_its_post = () => {

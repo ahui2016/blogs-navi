@@ -16,7 +16,7 @@ const Logs = util.CreateAlerts(0);
 
 const titleArea = m('div').addClass('text-center').append(
   m('h1').append(
-    util.LinkElem('/', {text:'博客更新导航'}),
+    util.LinkElem('/home', {text:'博客更新导航'}),
   ),
   m('div').text('批量检测博客更新，提供源代码可自建服务'),
 );

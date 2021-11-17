@@ -10,6 +10,7 @@ func main() {
 	e.HTTPErrorHandler = errorHandler
 
 	e.Static("/public", "public")
+	e.File("/home", "public/index.html")
 	e.File("/", "public/index.html")
 
 	api := e.Group("/api")

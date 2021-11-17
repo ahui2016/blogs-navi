@@ -10,10 +10,10 @@ const titleArea = m('div').addClass('text-center').append(
 );
 
 const naviBar = m('div').addClass('text-right').append(
-  m('a').text('Index').attr({href:'/'}),
+  m('a').text('Index').attr({href:'/home'}),
 );
 
-const SearchInput = create_input();
+const SearchInput = util.create_input();
 const SearchAlerts = util.CreateAlerts(2);
 const SearchBtn = cc('button', {text:'Search',classes:'btn btn-fat text-right'})
 const SearchForm = cc('form', {attr:{autocomplete:'off'}, children: [
@@ -102,9 +102,6 @@ function init() {
   initCategories();
 }
 
-function create_input(type:string='text'): mjComponent {
-  return cc('input', {attr:{type:type}});
-}
 function create_item(comp: mjComponent, name: string, description: string): mjElement {
   return m('div').addClass('mb-3').append(
     m('label').attr({for:comp.raw_id}).text(name),

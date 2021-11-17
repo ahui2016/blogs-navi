@@ -12,8 +12,9 @@ const titleArea = m('div').addClass('text-center').append(
 );
 
 const naviBar = m('div').addClass('text-right').append(
-  util.LinkElem('/',{text:'Index'}),
+  util.LinkElem('/home',{text:'Index'}),
   util.LinkElem('/public/edit-blog.html?id='+blogID, {text:'Edit'}).addClass('ml-2'),
+  util.LinkElem('/public/edit-post.html?blogid='+blogID, {text:'AddPost',title:'add post'}).addClass('ml-2'),
 );
 
 interface BlogInfoList extends mjComponent {
