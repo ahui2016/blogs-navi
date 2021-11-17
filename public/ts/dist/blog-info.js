@@ -5,7 +5,7 @@ let blogID = util.getUrlParam('id');
 const Loading = util.CreateLoading('center');
 const Alerts = util.CreateAlerts();
 const titleArea = m('div').addClass('text-center').append(m('h1').text('博客信息'));
-const naviBar = m('div').addClass('text-right').append(util.LinkElem('/', { text: 'Index' }), util.LinkElem('/public/edit-blog.html?id=' + blogID, { text: 'Edit' }).addClass('ml-2'));
+const naviBar = m('div').addClass('text-right').append(util.LinkElem('/home', { text: 'Index' }), util.LinkElem('/public/edit-blog.html?id=' + blogID, { text: 'Edit' }).addClass('ml-2'), util.LinkElem('/public/edit-post.html?blogid=' + blogID, { text: 'AddPost', title: 'add post' }).addClass('ml-2'));
 const BlogInfo = cc('table');
 BlogInfo.append = (key, value) => {
     BlogInfo.elem().append(create_table_row(key, value));

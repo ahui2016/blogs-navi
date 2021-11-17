@@ -53,6 +53,20 @@ func insertBlog(tx TX, blog *Blog) error {
 	return err
 }
 
+func insertPost(tx TX, post *Post) error {
+	_, err := tx.Exec(
+		stmt.InsertPost,
+		post.ID,
+		post.BlogID,
+		post.Url,
+		post.Title,
+		post.Contents,
+		post.CreatedAt,
+		post.Hide,
+	)
+	return err
+}
+
 func updateBlog(tx TX, blog *Blog) error {
 	_, err := tx.Exec(
 		stmt.UpdateBlog,

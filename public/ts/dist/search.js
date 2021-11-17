@@ -4,8 +4,8 @@ import * as util from './util.js';
 const Loading = util.CreateLoading();
 const Alerts = util.CreateAlerts();
 const titleArea = m('div').addClass('text-center').append(m('h1').text('站内搜索'));
-const naviBar = m('div').addClass('text-right').append(m('a').text('Index').attr({ href: '/' }));
-const SearchInput = create_input();
+const naviBar = m('div').addClass('text-right').append(m('a').text('Index').attr({ href: '/home' }));
+const SearchInput = util.create_input();
 const SearchAlerts = util.CreateAlerts(2);
 const SearchBtn = cc('button', { text: 'Search', classes: 'btn btn-fat text-right' });
 const SearchForm = cc('form', { attr: { autocomplete: 'off' }, children: [
@@ -60,9 +60,6 @@ $('#root').append(titleArea, naviBar, m(Alerts), m(SearchForm), m(CatListArea).a
 init();
 function init() {
     initCategories();
-}
-function create_input(type = 'text') {
-    return cc('input', { attr: { type: type } });
 }
 function create_item(comp, name, description) {
     return m('div').addClass('mb-3').append(m('label').attr({ for: comp.raw_id }).text(name), m(comp).addClass('form-textinput form-textinput-fat'), m('div').addClass('form-text').text(description));

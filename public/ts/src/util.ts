@@ -115,6 +115,7 @@ export interface AjaxOptions {
   alerts?: mjAlerts;
   buttonID?: string;
   responseType?: XMLHttpRequestResponseType;
+  contentType?: string;
 }
 
 export function ajax(
@@ -181,7 +182,14 @@ export function ajax(
     onAlways?.(this);
   };
 
-  if (options.body && !(options.body instanceof FormData)) {
+  if (options.contentType) {
+    if (options.contentType == 'json') options.contentType = 'application/json';
+    xhr.setRequestHeader('Content-Type', options.contentType);
+  }
+
+  if (options.contentType == 'application/json') {
+    xhr.send(JSON.stringify(options.body));
+  } else if (options.body && !(options.body instanceof FormData)) {
     const body = new FormData();
     for (const [k, v] of Object.entries(options.body)) {
       body.set(k, v);

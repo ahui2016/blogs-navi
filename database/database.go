@@ -13,6 +13,7 @@ import (
 
 type (
 	Blog = model.Blog
+	Post = model.Post
 )
 
 type DB struct {
@@ -39,7 +40,9 @@ func (db *DB) Open(dbPath string) (err error) {
 	if err = db.Exec(stmt.CreateTables); err != nil {
 		return
 	}
-	return initFirstID(blog_id_key, blog_id_prefix, db.DB)
+	e1 := initFirstID(blog_id_key, blog_id_prefix, db.DB)
+	e2 := initFirstID(post_id_key, post_id_prefix, db.DB)
+	return util.WrapErrors(e1, e2)
 }
 
 func (db *DB) InsertBlog(blog *Blog) (err error) {
@@ -50,6 +53,19 @@ func (db *DB) InsertBlog(blog *Blog) (err error) {
 		return
 	}
 	if err = insertBlog(tx, blog); err != nil {
+		return
+	}
+	return tx.Commit()
+}
+
+func (db *DB) InsertPost(post *Post) (err error) {
+	tx := db.mustBegin()
+	defer tx.Rollback()
+
+	if post.ID, err = getNextID(tx, post_id_key); err != nil {
+		return
+	}
+	if err = insertPost(tx, post); err != nil {
 		return
 	}
 	return tx.Commit()

@@ -10,6 +10,8 @@ import (
 const (
 	blog_id_key    = "blog-id-key"
 	blog_id_prefix = "B"
+	post_id_key    = "post-id-key"
+	post_id_prefix = "P"
 )
 
 func getTextValue(key string, tx TX) (value string, err error) {

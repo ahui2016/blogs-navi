@@ -11,6 +11,7 @@ import (
 
 type (
 	Blog = model.Blog
+	Post = model.Post
 )
 
 const (

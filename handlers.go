@@ -50,6 +50,20 @@ func addBlogHandler(c echo.Context) error {
 	return c.JSON(OK, Text{blog.ID})
 }
 
+func addPostHandler(c echo.Context) error {
+	if *demo {
+		return fmt.Errorf("你正在使用演示版，因此不可使用添加文章功能")
+	}
+	post, err := getPostValue(c)
+	if err != nil {
+		return err
+	}
+	if err := db.InsertPost(post); err != nil {
+		return err
+	}
+	return c.JSON(OK, Text{post.ID})
+}
+
 func updateBlogHandler(c echo.Context) error {
 	blog, err := getBlogValue(c)
 	if err != nil {
@@ -207,6 +221,24 @@ func getBlogValue(c echo.Context) (blog *Blog, err error) {
 		Feed:        feed,
 		Threshold:   thold,
 		Category:    category,
+	}, nil
+}
+
+func getPostValue(c echo.Context) (post *Post, err error) {
+	title, e1 := getFormValue(c, "title")
+	url, _ := getFormValue(c, "url")
+	date, e2 := getNumber(c, "date")
+	contents, e3 := getFormValue(c, "contents")
+	if err := util.WrapErrors(e1, e2, e3); err != nil {
+		return nil, err
+	}
+	return &Post{
+		ID:        c.FormValue("postid"),
+		BlogID:    c.FormValue("blogid"),
+		Url:       url,
+		Title:     title,
+		Contents:  contents,
+		CreatedAt: date,
 	}, nil
 }
 

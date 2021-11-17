@@ -122,7 +122,15 @@ export function ajax(options, onSuccess, onFail, onAlways, onReady) {
             enable(options.buttonID);
         onAlways === null || onAlways === void 0 ? void 0 : onAlways(this);
     };
-    if (options.body && !(options.body instanceof FormData)) {
+    if (options.contentType) {
+        if (options.contentType == 'json')
+            options.contentType = 'application/json';
+        xhr.setRequestHeader('Content-Type', options.contentType);
+    }
+    if (options.contentType == 'application/json') {
+        xhr.send(JSON.stringify(options.body));
+    }
+    else if (options.body && !(options.body instanceof FormData)) {
         const body = new FormData();
         for (const [k, v] of Object.entries(options.body)) {
             body.set(k, v);
@@ -168,8 +176,12 @@ export function LinkElem(href, options) {
         link.attr('target', '_blank');
     return link;
 }
-function newFormData(name, value) {
-    const fd = new FormData();
-    fd.set(name, value);
-    return fd;
+export function create_textarea(rows = 3) {
+    return cc('textarea', { classes: 'form-textarea', attr: { 'rows': rows } });
+}
+export function create_input(type = 'text') {
+    return cc('input', { attr: { type: type } });
+}
+export function create_item(comp, name, description) {
+    return m('div').addClass('mb-3').append(m('label').attr({ for: comp.raw_id }).text(name), m(comp).addClass('form-textinput form-textinput-fat'), m('div').addClass('form-text').text(description));
 }

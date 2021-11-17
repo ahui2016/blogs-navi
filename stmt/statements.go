@@ -37,6 +37,8 @@ CREATE TABLE IF NOT EXISTS post
   hide          int     NOT NULL
 );
 
+CREATE INDEX IF NOT EXISTS idx_post_created_at ON post(created_at);
+
 CREATE TABLE IF NOT EXISTS thumb
 (
 	id            text    PRIMARY KEY COLLATE NOCASE,
@@ -64,6 +66,10 @@ const InsertBlog = `INSERT INTO blog (
 	id, name, author, website, links, description, feed, feedetag,
 	feeddate, feedsize, lastupdate, threshold, status, errmsg, category
 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
+
+const InsertPost = `INSERT INTO post (
+	id, blog_id, url, title, contents, created_at, hide
+) VALUES (?, ?, ?, ?, ?, ?, ?);`
 
 const DeleteBlog = `DELETE FROM blog WHERE id=?;`
 
