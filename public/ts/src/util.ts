@@ -22,6 +22,16 @@ export interface Blog {
 	Category    :string; // 类别
 }
 
+export interface Post {
+	ID        :string;
+	BlogID    :string;
+	Url       :string;
+	Title     :string;
+	Contents  :string;
+	CreatedAt :number;
+	Hide      :boolean;
+}
+
 // 获取地址栏的参数。
 export function getUrlParam(param: string): string {
   const queryString = new URLSearchParams(document.location.search);

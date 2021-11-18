@@ -75,8 +75,14 @@ const DeleteBlog = `DELETE FROM blog WHERE id=?;`
 
 const GetBlogByID = `SELECT * FROM blog WHERE id=?;`
 
+const GetPostByID = `SELECT * FROM post WHERE id=?;`
+
 const UpdateBlog = `UPDATE blog SET name=?, author=?,
 	website=?, links=?, description=?, feed=?, threshold=?, category=?
+	WHERE id=?;`
+
+const UpdatePost = `UPDATE post SET
+	url=?, title=?, contents=?, created_at=?, hide=?
 	WHERE id=?;`
 
 const UpdateFeedResult = `UPDATE blog

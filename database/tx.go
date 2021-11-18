@@ -83,6 +83,19 @@ func updateBlog(tx TX, blog *Blog) error {
 	return err
 }
 
+func updatePost(tx TX, post *Post) error {
+	_, err := tx.Exec(
+		stmt.UpdatePost,
+		post.Url,
+		post.Title,
+		post.Contents,
+		post.CreatedAt,
+		post.Hide,
+		post.ID,
+	)
+	return err
+}
+
 func scanBlog(row Row) (blog Blog, err error) {
 	err = row.Scan(
 		&blog.ID,
@@ -100,6 +113,19 @@ func scanBlog(row Row) (blog Blog, err error) {
 		&blog.Status,
 		&blog.ErrMsg,
 		&blog.Category,
+	)
+	return
+}
+
+func scanPost(row Row) (post Post, err error) {
+	err = row.Scan(
+		&post.ID,
+		&post.BlogID,
+		&post.Url,
+		&post.Title,
+		&post.Contents,
+		&post.CreatedAt,
+		&post.Hide,
 	)
 	return
 }

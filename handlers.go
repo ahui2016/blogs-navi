@@ -69,15 +69,23 @@ func updateBlogHandler(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	blog.ID = strings.TrimSpace(blog.ID)
-	if blog.ID == "" {
-		return fmt.Errorf("id is empty, need an id")
-	}
 	// 确保 blog.ID 存在于数据库中
 	if _, err = db.GetBlogByID(blog.ID); err != nil {
 		return err
 	}
 	return db.UpdateBlog(blog)
+}
+
+func updatePostHandler(c echo.Context) error {
+	post, err := getPostValue(c)
+	if err != nil {
+		return err
+	}
+	// 确保 post.ID 存在于数据库中
+	if _, err := db.GetPostByID(post.ID); err != nil {
+		return err
+	}
+	return db.UpdatePost(post)
 }
 
 func deleteBlogHandler(c echo.Context) error {
@@ -98,6 +106,15 @@ func getBlogByID(c echo.Context) error {
 		return err
 	}
 	return c.JSON(OK, blog)
+}
+
+func getPostByID(c echo.Context) error {
+	id := c.FormValue("id")
+	post, err := db.GetPostByID(id)
+	if err != nil {
+		return err
+	}
+	return c.JSON(OK, post)
 }
 
 func countSearchResult(c echo.Context) error {

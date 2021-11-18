@@ -42,17 +42,28 @@ const Form = cc('form', { attr: { 'autocomplete': 'off' }, children: [
                 Alerts.insert('success', '成功添加文章');
                 Form.elem().hide();
             });
-        }), m(UpdateBtn).hide()),
+        }), m(UpdateBtn).on('click', e => {
+            e.preventDefault();
+            const body = newPostForm();
+            util.ajax({ method: 'POST', url: '/admin/update-post', alerts: SubmitAlerts, buttonID: UpdateBtn.id, body: body }, () => {
+                SubmitAlerts.insert('success', '更新成功');
+            });
+        }).hide()),
     ] });
 $('#root').append(m(Title), naviBar, m(Loading), m(Alerts), m(Form).hide());
 init();
 function init() {
-    initAuthor();
+    if (postID) {
+        ViewBtn.elem().show().attr({ href: '/public/view-post.html?id=' + postID, target: '_blank' });
+        $('title').text('Edit Post');
+        Title.elem().text(`Edit Post (id:${postID})`);
+        initForm();
+    }
+    else {
+        initAuthor();
+    }
 }
 function initAuthor() {
-    if (postID) {
-        ViewBtn.elem().show().attr({ href: '/public/view-post.html?id=' + postID });
-    }
     util.ajax({ method: 'POST', url: '/api/get-blog', alerts: Alerts, body: { id: blogID } }, (resp) => {
         const blog = resp;
         const author = blog.Author ? blog.Author : blog.Name;
@@ -62,6 +73,22 @@ function initAuthor() {
         Title.elem().trigger('focus');
     }, undefined, () => {
         Loading.hide();
+    });
+}
+function initForm() {
+    util.ajax({ method: 'POST', url: '/api/get-post', alerts: Alerts, body: { id: postID } }, resp => {
+        const post = resp;
+        blogID = post.BlogID;
+        AddBtn.elem().hide();
+        UpdateBtn.elem().show();
+        TitleInput.elem().val(post.Title);
+        UrlInput.elem().val(post.Url);
+        if (post.CreatedAt) {
+            DateInput.elem().val(dayjs.unix(post.CreatedAt).format('YYYY-MM-DD'));
+        }
+        ContentsInput.elem().val(post.Contents);
+        TitleInput.elem().trigger('focus');
+        initAuthor();
     });
 }
 function newPostForm() {

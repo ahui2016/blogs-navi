@@ -34,7 +34,7 @@ const UpdateBtn = cc('button', {text:'Update',classes:'btn btn-fat'});
 const Form = cc('form', {attr:{'autocomplete':'off'}, children: [
   m(AuthorArea),
   util.create_item(TitleInput, 'Title', '文章标题'),
-  util.create_item(UrlInput, 'URL', '原文网址'),
+  util.create_item(UrlInput, 'URL', '原文网址 (请填写以 http 开头的完整网址)'),
   util.create_item(DateInput, 'Date', '原文发布时间'),
   util.create_item(ContentsInput, 'Contents', '正文内容 (采用 Markdown 格式)'),
   util.create_item(PwdInput, 'Password', '必须输入正确的管理员密码才能提交表单'),
@@ -56,7 +56,14 @@ const Form = cc('form', {attr:{'autocomplete':'off'}, children: [
           Form.elem().hide();
         });
     }),
-    m(UpdateBtn).hide(),  
+    m(UpdateBtn).on('click', e => {
+      e.preventDefault();
+      const body = newPostForm();
+      util.ajax({method:'POST',url:'/admin/update-post',alerts:SubmitAlerts,buttonID:UpdateBtn.id,body:body},
+        () => {
+          SubmitAlerts.insert('success', '更新成功');
+        });
+    }).hide(),  
   ),
 ]});
 
@@ -71,13 +78,17 @@ $('#root').append(
 init();
 
 function init() {
-  initAuthor();
+  if (postID) {
+    ViewBtn.elem().show().attr({href:'/public/view-post.html?id='+postID,target:'_blank'});
+    $('title').text('Edit Post');
+    Title.elem().text(`Edit Post (id:${postID})`);
+    initForm();
+  } else {
+    initAuthor();
+  }
 }
 
 function initAuthor() {
-  if (postID) {
-    ViewBtn.elem().show().attr({href:'/public/view-post.html?id='+postID});
-  }
   util.ajax({method:'POST',url:'/api/get-blog',alerts:Alerts,body:{id: blogID}},
     (resp) => {
       const blog = resp as util.Blog;
@@ -91,18 +102,37 @@ function initAuthor() {
     });
 }
 
+function initForm() {
+  util.ajax({method:'POST',url:'/api/get-post',alerts:Alerts,body:{id: postID}},
+    resp => {
+      const post = resp as util.Post;
+      blogID = post.BlogID;
+      AddBtn.elem().hide();
+      UpdateBtn.elem().show();
+      TitleInput.elem().val(post.Title);
+      UrlInput.elem().val(post.Url);
+      if (post.CreatedAt) {
+        DateInput.elem().val(dayjs.unix(post.CreatedAt).format('YYYY-MM-DD'));
+      }
+      ContentsInput.elem().val(post.Contents);
+
+      TitleInput.elem().trigger('focus');
+      initAuthor();
+    });
+}
+
 function newPostForm() {
   let date = util.val(DateInput);
   if (date) {
     date = dayjs(date).unix().toString()
   }
   return {
-    postid:  postID,
-    blogid:  blogID,
-    title:   util.val(TitleInput).trim(),
-    url:     util.val(UrlInput).trim(),
-    date:    date,
+    postid:   postID,
+    blogid:   blogID,
+    title:    util.val(TitleInput).trim(),
+    url:      util.val(UrlInput).trim(),
+    date:     date,
     contents: util.val(ContentsInput).trim(),
-    pwd:     util.val(PwdInput),
+    pwd:      util.val(PwdInput),
   };
 }

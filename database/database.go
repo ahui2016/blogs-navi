@@ -79,11 +79,24 @@ func (db *DB) UpdateBlog(blog *Blog) error {
 	return updateBlog(db.DB, blog)
 }
 
+func (db *DB) UpdatePost(post *Post) error {
+	return updatePost(db.DB, post)
+}
+
 func (db *DB) GetBlogByID(id string) (blog Blog, err error) {
 	row := db.DB.QueryRow(stmt.GetBlogByID, id)
 	blog, err = scanBlog(row)
 	if err == sql.ErrNoRows {
 		err = fmt.Errorf("not found blog(id:%s)", id)
+	}
+	return
+}
+
+func (db *DB) GetPostByID(id string) (post Post, err error) {
+	row := db.DB.QueryRow(stmt.GetPostByID, id)
+	post, err = scanPost(row)
+	if err == sql.ErrNoRows {
+		err = fmt.Errorf("not found post(id:%s)", id)
 	}
 	return
 }

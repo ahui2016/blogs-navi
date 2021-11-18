@@ -19,6 +19,7 @@ func main() {
 	api.POST("/get-random-blogs", getRandomBlogs)
 	api.POST("/count-search", countSearchResult)
 	api.GET("/get-cats", getCats)
+	api.POST("/get-post", getPostByID)
 
 	// admin := e.Group("/admin", checkPassword)
 	admin := e.Group("/admin", checkPassword)
@@ -29,6 +30,7 @@ func main() {
 	admin.POST("/delete-blog", deleteBlogHandler)
 	admin.POST("/download-db", downloadDB)
 	admin.POST("/add-post", addPostHandler)
+	admin.POST("/update-post", updatePostHandler)
 
 	e.Logger.Fatal(e.Start(*addr))
 }
